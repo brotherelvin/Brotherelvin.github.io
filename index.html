@@ -1173,19 +1173,16 @@ function changePassword(){
 // 5. Global Auth Handlers
   window.doLogout = function() {
     window.auth.signOut().then(() => {
-      showPage('home'); // Sends the user back to the home screen
-    }).catch((error) => {
-      console.error("Error logging out:", error);
+      localStorage.removeItem('dg_session'); // Clear the local session
+      showPage('home'); // Send user back to home screen
     });
-
   };
+
   window.doLogin = function() {
     const email = document.getElementById("login-email").value;
     const password = document.getElementById("login-password").value;
     window.auth.signInWithEmailAndPassword(email, password)
-      .then(() => {
-        document.getElementById("auth-overlay").classList.remove("open");
-      })
+      .then(() => document.getElementById("auth-overlay").classList.remove("open"))
       .catch((err) => {
         const errEl = document.getElementById("login-error");
         errEl.style.display = "block";
@@ -1196,8 +1193,18 @@ function changePassword(){
   window.doSignup = function() {
     const email = document.getElementById("su-email").value;
     const password = document.getElementById("su-password").value;
+    
+    // Grab extra info from the form to save to the dashboard
+    const name = document.getElementById("su-name").value;
+    const phone = document.getElementById("su-phone").value;
+    const company = document.getElementById("su-company").value;
+
     window.auth.createUserWithEmailAndPassword(email, password)
       .then(() => {
+        // Build the local session so the old app logic is happy
+        localStorage.setItem('dg_session', JSON.stringify({
+          email: email, name: name || "Customer", phone: phone, company: company
+        }));
         document.getElementById("auth-overlay").classList.remove("open");
       })
       .catch((err) => {
@@ -1209,9 +1216,21 @@ function changePassword(){
 
   // 6. Auth State Listener (The Gatekeeper)
   window.auth.onAuthStateChanged((user) => {
-    console.log(user ? "User logged in: " + user.email : "No user found.");
-    
-    // The navigation updates automatically whenever the auth state changes
+    // --- THE BRIDGE ---
+    if (user) {
+      // If Firebase says we are logged in, make sure localStorage matches
+      let session = JSON.parse(localStorage.getItem('dg_session'));
+      if (!session) {
+        session = { email: user.email, name: "Customer", phone: "", company: "" };
+      } else {
+        session.email = user.email; // Ensure email matches
+      }
+      localStorage.setItem('dg_session', JSON.stringify(session));
+    } else {
+      localStorage.removeItem('dg_session');
+    }
+    // ------------------
+
     window.renderNav();
 
     const authGate = document.getElementById("auth-gate");
