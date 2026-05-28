@@ -391,7 +391,7 @@ footer{background:var(--black);color:rgba(255,255,255,0.35);font-size:0.75rem;te
 
       <div class="field"><label>DELIVERY TIME</label></div>
       <div class="time-grid">
-        <div class="time-opt selected" id="asap-opt" onclick="selectTime('asap',this)"><strong>ASAP</strong><span>2–4 hours</span></div>
+        <div class="time-opt selected" id="asap-opt" onclick="selectTime('asap',this)"><strong>ASAP</strong><span>1 hour</span></div>
         <div class="time-opt" id="sched-opt" onclick="selectTime('scheduled',this)"><strong>Scheduled</strong><span>Pick date &amp; time</span></div>
       </div>
       <div id="sched-fields" class="hidden">
@@ -767,8 +767,8 @@ function onCustomInput(){
   const v=parseInt(raw,10);
   const msg=document.getElementById('custom-msg');
   if(!raw||isNaN(v)){state.litres=null;msg.textContent='';msg.className='custom-msg';return;}
-  if(v<200){state.litres=null;msg.textContent='Minimum order is 10L.';msg.className='custom-msg err';return;}
-  if(v>20000){state.litres=null;msg.textContent='Maximum 1,000L per order.';msg.className='custom-msg err';return;}
+  if(v<10){state.litres=null;msg.textContent='Minimum order is 10L.';msg.className='custom-msg err';return;}
+  if(v>1000){state.litres=null;msg.textContent='Maximum 1,000L per order.';msg.className='custom-msg err';return;}
   state.litres=v;
   const {delivery,total}=calcTotal(v);
   msg.textContent=fmtR(v*PRICE)+(delivery===0?' · free delivery':' + R350 delivery')+' = '+fmtR(total);
