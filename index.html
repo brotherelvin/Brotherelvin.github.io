@@ -1127,6 +1127,13 @@ function changePassword(){
     };
 
     firebase.initializeApp(firebaseConfig);
+    firebase.auth().onAuthStateChanged((user) => {
+  if (user) {
+    console.log("SUCCESS: Firebase is connected and user is logged in!");
+  } else {
+    console.log("INFO: Firebase connected, but no user is logged in.");
+  }
+});
     const auth = firebase.auth();
     const analytics = firebase.analytics();
 
