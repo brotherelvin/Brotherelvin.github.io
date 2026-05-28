@@ -1171,6 +1171,18 @@ function changePassword(){
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     const target = document.getElementById('page-' + pageId);
     if (target) target.classList.add('active');
+    window.showPage = function(pageId) {
+  // 1. Hide all pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  
+  // 2. Show the target page
+  const target = document.getElementById('page-' + pageId);
+  if (target) {
+    target.classList.add('active');
+  } else {
+    console.error("Could not find element with ID: page-" + pageId);
+  }
+};
   };
   // Show the specific page requested
   const target = document.getElementById('page-' + pageId);
