@@ -1165,10 +1165,6 @@ function changePassword(){
         errEl.innerText = err.message;
       });
   };
-// Add this to make sure your dashboard button has a function to call
-window.showPage = function(pageId) {
-  // Hide all elements with the class 'page'
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   
   // Show the specific page requested
   const target = document.getElementById('page-' + pageId);
@@ -1209,7 +1205,11 @@ window.showPage = function(pageId) {
       if (progressBar) progressBar.classList.add("hidden");
       if (step1) step1.classList.add("hidden");
     }
-  });
+  });window.showPage = function(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const target = document.getElementById('page-' + pageId);
+    if (target) target.classList.add('active');
+  };
 </script>
 </body>
 </html>
