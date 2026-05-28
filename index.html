@@ -1170,10 +1170,14 @@ function changePassword(){
     }
   };
 
-  // 5. Global Auth Handlers
+// 5. Global Auth Handlers
   window.doLogout = function() {
-    window.auth.signOut();
-  };
+    window.auth.signOut().then(() => {
+      showPage('home'); // Sends the user back to the home screen
+    }).catch((error) => {
+      console.error("Error logging out:", error);
+    });
+
 
   window.doLogin = function() {
     const email = document.getElementById("login-email").value;
