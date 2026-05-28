@@ -1126,21 +1126,14 @@ function changePassword(){
       measurementId: "G-BWHNH91RY2"
     };
 
-    firebase.initializeApp(firebaseConfig);
-    firebase.auth().onAuthStateChanged((user) => {
-  if (user) {
-    console.log("SUCCESS: Firebase is connected and user is logged in!");
-  } else {
-    console.log("INFO: Firebase connected, but no user is logged in.");
-  }
-});
+   firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const analytics = firebase.analytics();
 
-    // GLOBAL RENDER NAV
+    // 2. Define your functions (doLogin, doSignup, etc.)
     window.renderNav = function() {
-      const navRight = document.getElementById("nav-right");
-      const user = auth.currentUser;
+       const navRight = document.getElementById("nav-right");
+       const user = auth.currentUser;
       
       if (user) {
         navRight.innerHTML = `
