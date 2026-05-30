@@ -1256,6 +1256,9 @@
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
+
+<script>
+// ---- SUBMIT GATE ----
 function checkSubmitReady() {
   var ready = document.getElementById('chk-interest').checked && document.getElementById('chk-meeting').checked;
   var btn = document.getElementById('submit-btn');
@@ -1263,7 +1266,6 @@ function checkSubmitReady() {
   btn.style.opacity = ready ? '1' : '0.35';
   btn.style.cursor = ready ? 'pointer' : 'not-allowed';
 }
-<script>
 // ---- NAVIGATION ----
 function showSection(id, linkEl) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
