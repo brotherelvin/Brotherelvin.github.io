@@ -706,24 +706,24 @@
       
       <div class="field-group">
         <label class="field-label">Monthly Eskom spend (R)</label>
-        <input type="number" class="field-input" id="monthly-spend" value="850000">
+        <input type="number" class="field-input" id="monthly-spend" value="850000" oninput="calcPPA()">
       </div>
       
       <div class="field-group">
         <label class="field-label">Average monthly consumption (kWh)</label>
-        <input type="number" class="field-input" id="monthly-kwh" value="500000">
+        <input type="number" class="field-input" id="monthly-kwh" value="500000" oninput="calcPPA()">
       </div>
       
       <div class="field-group">
         <label class="field-label">PPA tariff offered (R/kWh)</label>
-        <input type="number" class="field-input" id="ppa-tariff" value="1.20" step="0.01">
+        <input type="number" class="field-input" id="ppa-tariff" value="1.20" step="0.01" oninput="calcPPA()">
         <div class="field-hint">Wheeling PPA tariff inclusive of transmission/distribution losses. Typical range: R0.95 – R1.45/kWh.</div>
       </div>
       
       <div class="field-group">
         <label class="field-label">Amount of electricity to move to renewable</label>
         <div class="slider-row">
-          <input type="range" min="0" max="100" value="30" step="5" id="allocation-slider">
+          <input type="range" min="0" max="100" value="30" step="5" id="allocation-slider" oninput="updateSlider('allocation-slider','allocation-val','%'); calcPPA()">
           <span class="slider-val" id="allocation-val">30%</span>
         </div>
       </div>
@@ -731,21 +731,21 @@
       <div class="field-group">
         <label class="field-label">Eskom tariff escalation (% p.a.)</label>
         <div class="slider-row">
-          <input type="range" min="4" max="15" value="8" step="0.5" id="escalation-slider">
+          <input type="range" min="4" max="15" value="8" step="0.5" id="escalation-slider" oninput="updateSlider('escalation-slider','escalation-val','%'); calcPPA()">
           <span class="slider-val" id="escalation-val">8%</span>
         </div>
       </div>
       <div class="field-group">
         <label class="field-label">PPA escalation (% p.a.)</label>
         <div class="slider-row">
-          <input type="range" min="0" max="6" value="2" step="0.5" id="ppa-esc-slider">
+          <input type="range" min="0" max="6" value="2" step="0.5" id="ppa-esc-slider" oninput="updateSlider('ppa-esc-slider','ppa-esc-val','%'); calcPPA()">
           <span class="slider-val" id="ppa-esc-val">2%</span>
         </div>
       </div>
       <div class="field-group">
         <label class="field-label">PPA term (years)</label>
         <div class="slider-row">
-          <input type="range" min="5" max="25" value="20" step="1" id="term-slider">
+          <input type="range" min="10" max="25" value="20" step="1" id="term-slider" oninput="updateSlider('term-slider','term-val',' yrs'); calcPPA()">
           <span class="slider-val" id="term-val">20 yrs</span>
         </div>
       </div>
