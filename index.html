@@ -800,7 +800,7 @@
 </div>
 
 <script>
-// 1. Updates slider labels dynamically
+// 1. Updates slider text badge indicators
 function updateSlider(sliderId, valId, unit) {
   const slider = document.getElementById(sliderId);
   const display = document.getElementById(valId);
@@ -809,7 +809,7 @@ function updateSlider(sliderId, valId, unit) {
   }
 }
 
-// 2. Formats input text into an accounting style (commas and decimal validation) on the fly
+// 2. Formatting utility for accounting-style text entry
 function formatAccounting(input) {
   let value = input.value.replace(/,/g, '');
   value = value.replace(/[^0-9.]/g, '');
@@ -837,7 +837,7 @@ function formatAccounting(input) {
   }
 }
 
-// 3. Helper utility to scrub commas out so your math processing functions don't break
+// 3. Helper to securely strip commas before executing calculations
 function getNumericValue(id) {
   const el = document.getElementById(id);
   if (!el) return 0;
@@ -845,25 +845,115 @@ function getNumericValue(id) {
   return parseFloat(cleanValue) || 0;
 }
 
-// 4. Core calculation engine execution link
+// 4. Localized South African currency formatter helper (Spaced thousands)
+function formatSA(num) {
+  return 'R ' + Math.round(num).toLocaleString('en-ZA');
+}
+
+// 5. Complete Financial Modeling Calculation Engine
 function calcPPA() {
-  // Pulling numerical values safely out of the newly formatted text fields
   const monthlySpend = getNumericValue('monthly-spend');
   const monthlyKwh = getNumericValue('monthly-kwh');
   const ppaTariff = parseFloat(document.getElementById('ppa-tariff').value) || 0;
   
-  // Pulling values safely out of the range sliders
-  const allocationPercentage = parseFloat(document.getElementById('allocation-slider').value) / 100;
-  const eskomEscalation = parseFloat(document.getElementById('escalation-slider').value) / 100;
-  const ppaEscalation = parseFloat(document.getElementById('ppa-esc-slider').value) / 100;
+  const allocation = parseFloat(document.getElementById('allocation-slider').value) / 100;
+  const eskomEsc = parseFloat(document.getElementById('escalation-slider').value) / 100;
+  const ppaEsc = parseFloat(document.getElementById('ppa-esc-slider').value) / 100;
   const ppaTerm = parseInt(document.getElementById('term-slider').value) || 20;
 
-  // Target renewable baseline allocation logic
-  const targetRenewableKwh = monthlyKwh * allocationPercentage;
-  const targetRenewableSpend = monthlySpend * allocationPercentage;
+  if (monthlySpend <= 0 || monthlyKwh <= 0) return;
 
-  // --- Insert your custom PPA Lifecycle formula/chart rendering logic here ---
+  // Derive initial effective baseline Eskom tariff per kWh
+  const currentEskomRate = monthlySpend / monthlyKwh;
+  
+  let totalLifecycleSavings = 0;
+  let year1Savings = 0;
+  let finalYearSavings = 0;
+  let maxVisualCost = 0;
+  let breakdownData = [];
+
+  // Compounding trajectory loop
+  for (let yr = 1; yr <= ppaTerm; yr++) {
+    const factorEskom = Math.pow(1 + eskomEsc, yr - 1);
+    const factorPPA = Math.pow(1 + ppaEsc, yr - 1);
+
+    const escalatedEskomRate = currentEskomRate * factorEskom;
+    const escalatedPpaRate = ppaTariff * factorPPA;
+
+    // Calculate split cost dynamics
+    const renewableKwhAnnum = (monthlyKwh * allocation) * 12;
+    const traditionalKwhAnnum = (monthlyKwh * (1 - allocation)) * 12;
+
+    const baseEskomCostAnnum = (renewableKwhAnnum + traditionalKwhAnnum) * escalatedEskomRate;
+    const cleanPpaCostAnnum = (renewableKwhAnnum * escalatedPpaRate) + (traditionalKwhAnnum * escalatedEskomRate);
+
+    const netSavingsAnnum = baseEskomCostAnnum - cleanPpaCostAnnum;
+    totalLifecycleSavings += netSavingsAnnum;
+
+    if (yr === 1) year1Savings = netSavingsAnnum;
+    if (yr === ppaTerm) finalYearSavings = netSavingsAnnum;
+
+    if (baseEskomCostAnnum > maxVisualCost) maxVisualCost = baseEskomCostAnnum;
+
+    breakdownData.push({
+      year: yr,
+      eskomCost: baseEskomCostAnnum,
+      ppaCost: cleanPpaCostAnnum,
+      savings: netSavingsAnnum
+    });
+  }
+
+  // Calculate Year 1 Initial Percentage Discount 
+  const effectiveDiscount = currentEskomRate > 0 ? ((currentEskomRate - ppaTariff) / currentEskomRate) * 100 * allocation : 0;
+
+  // DOM Updates - Right Side Cards
+  document.getElementById('r-total-savings').textContent = formatSA(totalLifecycleSavings);
+  document.getElementById('r-savings-sub').textContent = `vs projected Eskom over ${ppaTerm} years`;
+  document.getElementById('r-yr1').textContent = formatSA(year1Savings);
+  document.getElementById('r-last-yr').textContent = ppaTerm;
+  document.getElementById('r-last').textContent = formatSA(finalYearSavings);
+  document.getElementById('r-discount').textContent = Math.max(0, Math.round(effectiveDiscount)) + '%';
+
+  // Dynamic Chart Rows Generator
+  const chartContainer = document.getElementById('chart-rows');
+  if (chartContainer) {
+    let chartHtml = '';
+    breakdownData.forEach(d => {
+      // Scale percentage tracking bars safely
+      const eskomPct = (d.eskomCost / maxVisualCost) * 100;
+      const ppaPct = (d.ppaCost / maxVisualCost) * 100;
+
+      chartHtml += `
+        <div style="margin-bottom: 1rem; font-size: 0.8rem; color: #fff;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+            <span>Year ${d.year}</span>
+            <span style="color: #00ffcc; font-weight: bold;">Save ${formatSA(d.savings)}</span>
+          </div>
+          <div style="display: flex; align-items: center; margin-bottom: 2px;">
+            <div style="width: 70px; font-size: 0.7rem; color: #aaa;">Grid Baseline</div>
+            <div style="background: rgba(255,255,255,0.1); flex-grow: 1; height: 6px; border-radius: 3px; overflow: hidden; margin-right: 10px;">
+              <div style="background: #e67e22; width: ${eskomPct}%; height: 100%;"></div>
+            </div>
+            <div style="width: 80px; text-align: right; font-size: 0.75rem;">${formatSA(d.eskomCost)}</div>
+          </div>
+          <div style="display: flex; align-items: center;">
+            <div style="width: 70px; font-size: 0.7rem; color: #aaa;">PPA Hybrid</div>
+            <div style="background: rgba(255,255,255,0.1); flex-grow: 1; height: 6px; border-radius: 3px; overflow: hidden; margin-right: 10px;">
+              <div style="background: #00ffcc; width: ${ppaPct}%; height: 100%;"></div>
+            </div>
+            <div style="width: 80px; text-align: right; font-size: 0.75rem;">${formatSA(d.ppaCost)}</div>
+          </div>
+        </div>
+      `;
+    });
+    chartContainer.innerHTML = chartHtml;
+  }
 }
+
+// Fire calculation cycle instantly on page mount
+window.addEventListener('DOMContentLoaded', () => {
+  calcPPA();
+});
 </script>
 
 <!-- CAPACITY -->
