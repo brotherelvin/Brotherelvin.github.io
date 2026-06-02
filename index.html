@@ -1530,30 +1530,30 @@ window.calcPPA = function() {
       if (!d) return;
       const eskomWidth = (d.eskomCost / scale) * 100;
       const ppaWidth = (d.ppaCost / scale) * 100;
-      html += `
+ chartHtml += `
         <div style="margin-bottom: 1rem; font-size: 0.8rem; color: #fff;">
           <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
             <span>Year ${d.year}</span>
-            <span style="color: #00ffcc; font-weight: bold;">Save ${fmtR(d.savings)}</span>
+            <span style="color: #00ffcc; font-weight: bold;">Save ${formatSA(d.savings)}</span>
           </div>
           <div style="display: flex; align-items: center; margin-bottom: 2px;">
             <div style="width: 70px; font-size: 0.7rem; color: #aaa;">Grid Baseline</div>
             <div style="background: rgba(255,255,255,0.1); flex-grow: 1; height: 6px; border-radius: 3px; overflow: hidden; margin-right: 10px;">
-              <div style="background: #e67e22; width: ${Math.min(100, eskomWidth)}%; height: 100%;"></div>
+              <div style="background: #e67e22; width: ${eskomPct}%; height: 100%;"></div>
             </div>
-            <div style="width: 110px; text-align: right; font-size: 0.75rem;">${fmtR(d.eskomCost)}</div>
+            <div style="width: 110px; text-align: right; font-size: 0.75rem;">${formatSA(d.eskomCost)}</div>
           </div>
           <div style="display: flex; align-items: center;">
             <div style="width: 70px; font-size: 0.7rem; color: #aaa;">PPA Hybrid</div>
             <div style="background: rgba(255,255,255,0.1); flex-grow: 1; height: 6px; border-radius: 3px; overflow: hidden; margin-right: 10px;">
-              <div style="background: #00ffcc; width: ${Math.min(100, ppaWidth)}%; height: 100%;"></div>
+              <div style="background: #00ffcc; width: ${ppaPct}%; height: 100%;"></div>
             </div>
-            <div style="width: 110px; text-align: right; font-size: 0.75rem;">${fmtR(d.ppaCost)}</div>
+            <div style="width: 110px; text-align: right; font-size: 0.75rem;">${formatSA(d.ppaCost)}</div>
           </div>
         </div>
       `;
     });
-    chartContainer.innerHTML = html;
+    chartContainer.innerHTML = chartHtml;
   }
 
   calcData = { yr1Savings, totalSavings, discount: discountPct, term: ppaTerm, ppaEsc, eskomEsc };
