@@ -800,6 +800,7 @@
 </div>
 
 <script>
+<script>
 // 1. Updates slider label text badges
 function updateSlider(sliderId, valId, unit) {
   const slider = document.getElementById(sliderId);
@@ -917,12 +918,46 @@ function calcPPA() {
   }
 }
 
-// Automatically execute the calculation engine on initial load
-window.addEventListener('DOMContentLoaded', () => {
+// FORCE global scope accessibility to bypass module context or scope isolation restrictions
+window.calcPPA = calcPPA;
+window.updateSlider = updateSlider;
+
+// Programmatically attach background listeners on page load to guarantee live updates
+document.addEventListener('DOMContentLoaded', () => {
+  // Run an initial calculation pass
   calcPPA();
+
+  // Bind clean number input fields
+  ['monthly-spend', 'monthly-kwh', 'ppa-tariff'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', calcPPA);
+  });
+
+  // Bind sliders programmatically to guarantee immediate responses on move
+  const sliders = [
+    { id: 'allocation-slider', valId: 'allocation-val', unit: '%' },
+    { id: 'escalation-slider', valId: 'escalation-val', unit: '%' },
+    { id: 'ppa-esc-slider', valId: 'ppa-esc-val', unit: '%' },
+    { id: 'term-slider', valId: 'term-val', unit: ' yrs' }
+  ];
+
+  sliders.forEach(s => {
+    const el = document.getElementById(s.id);
+    if (el) {
+      el.addEventListener('input', () => {
+        updateSlider(s.id, s.valId, s.unit);
+        calcPPA();
+      });
+    }
+  });
+
+  // Bind the selector dropdown
+  const select = document.getElementById('industry-select');
+  if (select) {
+    select.addEventListener('change', calcPPA);
+  }
 });
 </script>
-
 <!-- CAPACITY -->
 <div id="section-capacity" class="section">
   <div class="page-header">
