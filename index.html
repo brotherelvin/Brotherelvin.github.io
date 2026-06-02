@@ -702,19 +702,31 @@
   </div>
   <div class="calc-layout">
     <div class="calc-inputs">
+      
       <div class="field-group">
         <label class="field-label">Monthly Eskom spend (R)</label>
-        <input type="number" class="field-input" id="monthly-spend" value="850000" oninput="calcPPA()">
+        <input type="text" class="field-input" id="monthly-spend" value="850,000.00" oninput="formatAccounting(this); calcPPA()">
       </div>
+      
       <div class="field-group">
         <label class="field-label">Average monthly consumption (kWh)</label>
-        <input type="number" class="field-input" id="monthly-kwh" value="500000" oninput="calcPPA()">
+        <input type="text" class="field-input" id="monthly-kwh" value="500,000.00" oninput="formatAccounting(this); calcPPA()">
       </div>
+      
       <div class="field-group">
         <label class="field-label">PPA tariff offered (R/kWh)</label>
         <input type="number" class="field-input" id="ppa-tariff" value="1.20" step="0.01" oninput="calcPPA()">
         <div class="field-hint">Wheeling PPA tariff inclusive of transmission/distribution losses. Typical range: R0.95 – R1.45/kWh.</div>
       </div>
+      
+      <div class="field-group">
+        <label class="field-label">Amount of electricity to move to renewable</label>
+        <div class="slider-row">
+          <input type="range" min="0" max="100" value="30" step="5" id="allocation-slider" oninput="updateSlider('allocation-slider','allocation-val','%'); calcPPA()">
+          <span class="slider-val" id="allocation-val">30%</span>
+        </div>
+      </div>
+
       <div class="field-group">
         <label class="field-label">Eskom tariff escalation (% p.a.)</label>
         <div class="slider-row">
@@ -781,11 +793,78 @@
       <hr class="divider">
 
       <div style="display:flex; gap:1rem; justify-content:flex-end;">
-      <button class="btn-outline" onclick="showSection('cfo', this); setTimeout(populateCFO, 50);">Generate CFO Brief →</button>
+        <button class="btn-outline" onclick="showSection('cfo', this); setTimeout(populateCFO, 50);">Generate CFO Brief →</button>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+// 1. Updates slider labels dynamically
+function updateSlider(sliderId, valId, unit) {
+  const slider = document.getElementById(sliderId);
+  const display = document.getElementById(valId);
+  if (slider && display) {
+    display.textContent = slider.value + unit;
+  }
+}
+
+// 2. Formats input text into an accounting style (commas and decimal validation) on the fly
+function formatAccounting(input) {
+  let value = input.value.replace(/,/g, '');
+  value = value.replace(/[^0-9.]/g, '');
+  
+  const parts = value.split('.');
+  if (parts.length > 2) parts.pop(); 
+  value = parts.join('.');
+
+  if (!value) {
+    input.value = '';
+    return;
+  }
+
+  let integerPart = parts[0];
+  let decimalPart = parts[1];
+
+  integerPart = Array.from(integerPart).reverse().reduce((acc, digit, idx) => {
+    return digit + (idx && idx % 3 === 0 ? ',' : '') + acc;
+  }, '');
+
+  if (decimalPart !== undefined) {
+    input.value = integerPart + '.' + decimalPart.substring(0, 2);
+  } else {
+    input.value = integerPart;
+  }
+}
+
+// 3. Helper utility to scrub commas out so your math processing functions don't break
+function getNumericValue(id) {
+  const el = document.getElementById(id);
+  if (!el) return 0;
+  const cleanValue = el.value.replace(/,/g, '');
+  return parseFloat(cleanValue) || 0;
+}
+
+// 4. Core calculation engine execution link
+function calcPPA() {
+  // Pulling numerical values safely out of the newly formatted text fields
+  const monthlySpend = getNumericValue('monthly-spend');
+  const monthlyKwh = getNumericValue('monthly-kwh');
+  const ppaTariff = parseFloat(document.getElementById('ppa-tariff').value) || 0;
+  
+  // Pulling values safely out of the range sliders
+  const allocationPercentage = parseFloat(document.getElementById('allocation-slider').value) / 100;
+  const eskomEscalation = parseFloat(document.getElementById('escalation-slider').value) / 100;
+  const ppaEscalation = parseFloat(document.getElementById('ppa-esc-slider').value) / 100;
+  const ppaTerm = parseInt(document.getElementById('term-slider').value) || 20;
+
+  // Target renewable baseline allocation logic
+  const targetRenewableKwh = monthlyKwh * allocationPercentage;
+  const targetRenewableSpend = monthlySpend * allocationPercentage;
+
+  // --- Insert your custom PPA Lifecycle formula/chart rendering logic here ---
+}
+</script>
 
 <!-- CAPACITY -->
 <div id="section-capacity" class="section">
