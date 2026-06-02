@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -694,8 +695,6 @@
 </div>
 
 <!-- CALCULATOR -->
-```html
-
 <div id="section-calculator" class="section">
   <div class="page-header">
     <div class="page-eyebrow">Module 01 — Financial Modeling</div>
@@ -819,21 +818,21 @@ function updateSliderLabel(sliderId, valueId, unit) {
   }
 }
 
-// Core financial calculation & UI update
+// Core financial calculation & UI update (FIXED: allocation now correctly influences hybrid cost)
 function calcPPA() {
-  // Read inputs (all IDs unchanged)
+  // Read inputs
   const monthlySpend = parseFloat(document.getElementById('monthly-spend').value) || 0;
   const monthlyKwh = parseFloat(document.getElementById('monthly-kwh').value) || 0;
   const ppaTariff = parseFloat(document.getElementById('ppa-tariff').value) || 0;
   
-  // Sliders (allocation, escalations, term)
+  // Sliders
   const allocationPct = parseFloat(document.getElementById('allocation-slider').value) || 0;
   const allocation = allocationPct / 100;
   const eskomEsc = (parseFloat(document.getElementById('escalation-slider').value) || 8) / 100;
   const ppaEsc = (parseFloat(document.getElementById('ppa-esc-slider').value) || 2) / 100;
   const ppaTerm = parseInt(document.getElementById('term-slider').value, 10) || 20;
 
-  // Guard: valid consumption required
+  // Guard: valid inputs required
   if (monthlySpend <= 0 || monthlyKwh <= 0) {
     document.getElementById('r-total-savings').textContent = formatSA(0);
     document.getElementById('r-savings-sub').textContent = `vs projected Eskom over ${ppaTerm} years`;
@@ -845,7 +844,8 @@ function calcPPA() {
     return;
   }
 
-  const currentEskomRate = monthlySpend / monthlyKwh;
+  const annualKwh = monthlyKwh * 12;
+  const currentEskomRate = monthlySpend / monthlyKwh;  // R/kWh
   let totalSavings = 0;
   let yr1Savings = 0;
   let finalSavings = 0;
@@ -858,11 +858,13 @@ function calcPPA() {
     const eskomRateYr = currentEskomRate * factorEskom;
     const ppaRateYr = ppaTariff * factorPpa;
 
-    const annualKwh = monthlyKwh * 12;
+    // Split annual consumption based on allocation slider
     const renewableKwh = annualKwh * allocation;
     const gridKwh = annualKwh * (1 - allocation);
 
+    // Baseline: if 100% grid at Eskom rate
     const baselineCost = annualKwh * eskomRateYr;
+    // Hybrid: renewable portion at PPA rate, remaining at Eskom rate
     const hybridCost = (renewableKwh * ppaRateYr) + (gridKwh * eskomRateYr);
     const savings = baselineCost - hybridCost;
 
@@ -885,12 +887,22 @@ function calcPPA() {
   document.getElementById('r-last').textContent = formatSA(finalSavings);
   document.getElementById('r-discount').textContent = Math.round(discountPct) + '%';
 
-  // Build dynamic chart rows (trajectory)
+  // Build dynamic chart rows (show key years for clarity)
   const chartContainer = document.getElementById('chart-rows');
   if (chartContainer && yearlyData.length) {
     let html = '';
     const scale = maxCost || 1;
-    yearlyData.forEach(d => {
+    // Show years 1, 5, 10, 15, term (or all if term <=10)
+    const displayYears = new Set();
+    displayYears.add(1);
+    if (ppaTerm >= 5) displayYears.add(5);
+    if (ppaTerm >= 10) displayYears.add(10);
+    if (ppaTerm >= 15) displayYears.add(15);
+    displayYears.add(ppaTerm);
+    const sortedYears = Array.from(displayYears).sort((a,b) => a-b);
+    sortedYears.forEach(y => {
+      const d = yearlyData[y-1];
+      if (!d) return;
       const eskomWidth = (d.eskomCost / scale) * 100;
       const ppaWidth = (d.ppaCost / scale) * 100;
       html += `
@@ -920,13 +932,12 @@ function calcPPA() {
   }
 }
 
-// Global references for any external calls (CFO brief etc.)
+// Global references
 window.calcPPA = calcPPA;
 window.updateSlider = updateSliderLabel;
 
-// Set up all event listeners (no inline handlers needed, keeps IDs untouched)
+// Set up all event listeners (no inline handlers needed)
 document.addEventListener('DOMContentLoaded', () => {
-  // Helper to refresh everything: update labels + recalc
   const refresh = () => {
     updateSliderLabel('allocation-slider', 'allocation-val', '%');
     updateSliderLabel('escalation-slider', 'escalation-val', '%');
@@ -947,15 +958,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (el) el.addEventListener('input', refresh);
   });
 
-  // Industry selector (triggers refresh for consistency)
+  // Industry selector
   const industry = document.getElementById('industry-select');
   if (industry) industry.addEventListener('change', refresh);
 
-  // Initial run
   refresh();
 });
 
-// Stubs for external CFO brief button (keeps console clean)
+// Stubs for external functions
 window.showSection = window.showSection || function() {};
 window.populateCFO = window.populateCFO || function() {};
 </script>
@@ -1145,18 +1155,16 @@ window.populateCFO = window.populateCFO || function() {};
 
           <p class="pdf-section-title">Next Steps</p>
           <table class="pdf-table">
-            <thead>
-              <tr><th>Step</th><th>Milestone</th><th>Responsibility</th></tr>
-            </thead>
+            <thead><tr><th>Step</th><th>Milestone</th><th>Responsibility</th></tr></thead>
             <tbody>
-<tr><td>0</td><td>Pre-Meeting Qualification</td><td>Aethel Energy</td></tr>
-        <tr><td>1</td><td>NDA + Site Access Agreement</td><td>Aethel Energy / Offtaker</td></tr>
-        <tr><td>2</td><td>12-month consumption data submission</td><td>Offtaker</td></tr>
-        <tr><td>3</td><td>Discovery Meeting (w/ Utility Partner)</td><td>Aethel Energy, Offtaker & Utility Partner</td></tr>
-        <tr><td>4</td><td>Indicative Tariff Letter (ITL)</td><td>Utility Partner</td></tr>
-        <tr><td>5</td><td>Municipal / Eskom wheeling concurrence</td><td>Utility Partner (supported by Offtaker)</td></tr>
-        <tr><td>6</td><td>Wheeling PPA execution</td><td>Aethel Energy, Offtaker & Utility Partner</td></tr>
-        <tr><td>7</td><td>Financial close, EPC award & energisation</td><td>Utility Partner</td></tr>
+              <tr><td>0</td><td>Pre-Meeting Qualification</td><td>Aethel Energy</td></tr>
+              <tr><td>1</td><td>NDA + Site Access Agreement</td><td>Aethel Energy / Offtaker</td></tr>
+              <tr><td>2</td><td>12-month consumption data submission</td><td>Offtaker</td></tr>
+              <tr><td>3</td><td>Discovery Meeting (w/ Utility Partner)</td><td>Aethel Energy, Offtaker & Utility Partner</td></tr>
+              <tr><td>4</td><td>Indicative Tariff Letter (ITL)</td><td>Utility Partner</td></tr>
+              <tr><td>5</td><td>Municipal / Eskom wheeling concurrence</td><td>Utility Partner (supported by Offtaker)</td></tr>
+              <tr><td>6</td><td>Wheeling PPA execution</td><td>Aethel Energy, Offtaker & Utility Partner</td></tr>
+              <tr><td>7</td><td>Financial close, EPC award & energisation</td><td>Utility Partner</td></tr>
             </tbody>
           </table>
         </div>
@@ -1445,7 +1453,6 @@ function showSection(id, linkEl) {
   document.getElementById('section-' + id).classList.add('active');
   document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
   if (linkEl) linkEl.classList.add('active');
-  // sync desktop nav active when called from mobile
   if (!linkEl) {
     const sections = ['hero','calculator','capacity','cfo','onboarding'];
     const idx = sections.indexOf(id);
@@ -1455,7 +1462,7 @@ function showSection(id, linkEl) {
   window.scrollTo(0, 0);
 }
 
-// ---- CALCULATOR ----
+// ---- CALCULATOR HELPERS (used by CFO) ----
 function fmtR(n) {
   if (n >= 1e9) return 'R ' + (n/1e9).toFixed(1) + 'B';
   if (n >= 1e6) return 'R ' + (n/1e6).toFixed(1) + 'M';
@@ -1463,69 +1470,94 @@ function fmtR(n) {
 }
 function fmtPct(n) { return Math.round(n) + '%'; }
 
-function updateSlider(sliderId, valId, suffix) {
-  const v = document.getElementById(sliderId).value;
-  document.getElementById(valId).textContent = v + suffix;
-}
-
 let calcData = {};
 
-function calcPPA() {
-  const monthly = parseFloat(document.getElementById('monthly-spend').value) || 0;
-  const kwh = parseFloat(document.getElementById('monthly-kwh').value) || 1;
-  const ppaT = parseFloat(document.getElementById('ppa-tariff').value) || 0;
-  const eskEsc = parseFloat(document.getElementById('escalation-slider').value) / 100;
-  const ppaEsc = parseFloat(document.getElementById('ppa-esc-slider').value) / 100;
-  const term = parseInt(document.getElementById('term-slider').value);
+// Override calcPPA to also store data for CFO
+window.calcPPA = function() {
+  const monthlySpend = parseFloat(document.getElementById('monthly-spend').value) || 0;
+  const monthlyKwh = parseFloat(document.getElementById('monthly-kwh').value) || 1;
+  const ppaTariff = parseFloat(document.getElementById('ppa-tariff').value) || 0;
+  const allocationPct = parseFloat(document.getElementById('allocation-slider').value) || 0;
+  const allocation = allocationPct / 100;
+  const eskomEsc = (parseFloat(document.getElementById('escalation-slider').value) || 8) / 100;
+  const ppaEsc = (parseFloat(document.getElementById('ppa-esc-slider').value) || 2) / 100;
+  const ppaTerm = parseInt(document.getElementById('term-slider').value, 10) || 20;
 
-  const eskR = (monthly * 12) / (kwh * 12); // current esk R/kWh
-  const ppaAnnual0 = ppaT * kwh * 12;
-  const eskAnnual0 = monthly * 12;
+  const annualKwh = monthlyKwh * 12;
+  const currentEskomRate = monthlySpend / monthlyKwh;
+  let totalSavings = 0;
+  let yr1Savings = 0;
+  let finalSavings = 0;
+  let maxCost = 0;
+  let yearlyData = [];
 
-  let totalSaving = 0, yr1Saving = 0, lastSaving = 0;
-  let chartRows = '';
+  for (let yr = 1; yr <= ppaTerm; yr++) {
+    const factorEskom = Math.pow(1 + eskomEsc, yr - 1);
+    const factorPpa = Math.pow(1 + ppaEsc, yr - 1);
+    const eskomRateYr = currentEskomRate * factorEskom;
+    const ppaRateYr = ppaTariff * factorPpa;
 
-  for (let y = 1; y <= term; y++) {
-    const eskY = eskAnnual0 * Math.pow(1 + eskEsc, y - 1);
-    const ppaY = ppaAnnual0 * Math.pow(1 + ppaEsc, y - 1);
-    const saving = eskY - ppaY;
-    totalSaving += saving;
-    if (y === 1) yr1Saving = saving;
-    if (y === term) lastSaving = saving;
+    const renewableKwh = annualKwh * allocation;
+    const gridKwh = annualKwh * (1 - allocation);
+    const baselineCost = annualKwh * eskomRateYr;
+    const hybridCost = (renewableKwh * ppaRateYr) + (gridKwh * eskomRateYr);
+    const savings = baselineCost - hybridCost;
 
-    const maxVal = eskAnnual0 * Math.pow(1 + eskEsc, term - 1);
-    const eskPct = Math.min(100, Math.round((eskY / maxVal) * 100));
-    const ppaPct = Math.min(100, Math.round((ppaY / maxVal) * 100));
-
-    if (y <= 5 || y === 10 || y === 15 || y === term) {
-      chartRows += `
-        <div style="margin-bottom:0.75rem;">
-          <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--text-muted);margin-bottom:0.3rem;">
-            <span>Year ${y}</span>
-            <span style="color:var(--gold);">Save ${fmtR(saving)}</span>
-          </div>
-          <div style="display:flex;gap:4px;align-items:center;">
-            <div style="width:${eskPct}%;height:6px;background:#3a3530;border-radius:2px;position:relative;">
-              <div style="position:absolute;left:0;top:0;height:100%;width:${Math.round((ppaY/eskY)*100)}%;background:var(--gold);border-radius:2px;"></div>
-            </div>
-            <span style="font-size:0.68rem;color:var(--text-muted);white-space:nowrap;">${fmtR(eskY)}</span>
-          </div>
-        </div>`;
-    }
+    totalSavings += savings;
+    if (yr === 1) yr1Savings = savings;
+    if (yr === ppaTerm) finalSavings = savings;
+    if (baselineCost > maxCost) maxCost = baselineCost;
+    yearlyData.push({ year: yr, eskomCost: baselineCost, ppaCost: hybridCost, savings: savings });
   }
 
-  const discount = eskR > 0 ? ((eskR - ppaT) / eskR) * 100 : 0;
+  const originalAnnualBill = monthlySpend * 12;
+  const discountPct = originalAnnualBill > 0 ? Math.max(0, (yr1Savings / originalAnnualBill) * 100) : 0;
 
-  document.getElementById('r-total-savings').textContent = fmtR(totalSaving);
-  document.getElementById('r-savings-sub').textContent = 'vs projected Eskom over ' + term + ' years';
-  document.getElementById('r-yr1').textContent = fmtR(yr1Saving);
-  document.getElementById('r-last').textContent = fmtR(lastSaving);
-  document.getElementById('r-last-yr').textContent = term;
-  document.getElementById('r-discount').textContent = fmtPct(discount);
-  document.getElementById('chart-rows').innerHTML = chartRows;
+  document.getElementById('r-total-savings').textContent = fmtR(totalSavings);
+  document.getElementById('r-savings-sub').textContent = `vs projected Eskom over ${ppaTerm} years`;
+  document.getElementById('r-yr1').textContent = fmtR(yr1Savings);
+  document.getElementById('r-last-yr').textContent = ppaTerm;
+  document.getElementById('r-last').textContent = fmtR(finalSavings);
+  document.getElementById('r-discount').textContent = fmtPct(discountPct);
 
-  calcData = { yr1Saving, totalSaving, discount, term, ppaEsc, eskEsc };
-}
+  const chartContainer = document.getElementById('chart-rows');
+  if (chartContainer && yearlyData.length) {
+    let html = '';
+    const scale = maxCost || 1;
+    const displayYears = new Set([1,5,10,15,ppaTerm]);
+    Array.from(displayYears).sort((a,b)=>a-b).forEach(y => {
+      const d = yearlyData[y-1];
+      if (!d) return;
+      const eskomWidth = (d.eskomCost / scale) * 100;
+      const ppaWidth = (d.ppaCost / scale) * 100;
+      html += `
+        <div style="margin-bottom: 1rem; font-size: 0.8rem; color: #fff;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+            <span>Year ${d.year}</span>
+            <span style="color: #00ffcc; font-weight: bold;">Save ${fmtR(d.savings)}</span>
+          </div>
+          <div style="display: flex; align-items: center; margin-bottom: 2px;">
+            <div style="width: 70px; font-size: 0.7rem; color: #aaa;">Grid Baseline</div>
+            <div style="background: rgba(255,255,255,0.1); flex-grow: 1; height: 6px; border-radius: 3px; overflow: hidden; margin-right: 10px;">
+              <div style="background: #e67e22; width: ${Math.min(100, eskomWidth)}%; height: 100%;"></div>
+            </div>
+            <div style="width: 110px; text-align: right; font-size: 0.75rem;">${fmtR(d.eskomCost)}</div>
+          </div>
+          <div style="display: flex; align-items: center;">
+            <div style="width: 70px; font-size: 0.7rem; color: #aaa;">PPA Hybrid</div>
+            <div style="background: rgba(255,255,255,0.1); flex-grow: 1; height: 6px; border-radius: 3px; overflow: hidden; margin-right: 10px;">
+              <div style="background: #00ffcc; width: ${Math.min(100, ppaWidth)}%; height: 100%;"></div>
+            </div>
+            <div style="width: 110px; text-align: right; font-size: 0.75rem;">${fmtR(d.ppaCost)}</div>
+          </div>
+        </div>
+      `;
+    });
+    chartContainer.innerHTML = html;
+  }
+
+  calcData = { yr1Savings, totalSavings, discount: discountPct, term: ppaTerm, ppaEsc, eskomEsc };
+};
 
 // ---- CFO BRIEF ----
 function populateCFO() {
@@ -1547,13 +1579,13 @@ function populateCFO() {
   document.getElementById('pdf-mw-t').textContent = mw + ' MW AC';
   document.getElementById('pdf-tech-t').textContent = tech;
 
-  if (calcData.yr1Saving) {
-    document.getElementById('pdf-yr1-s').textContent = fmtR(calcData.yr1Saving);
-    document.getElementById('pdf-total-s').textContent = fmtR(calcData.totalSaving);
+  if (calcData.yr1Savings) {
+    document.getElementById('pdf-yr1-s').textContent = fmtR(calcData.yr1Savings);
+    document.getElementById('pdf-total-s').textContent = fmtR(calcData.totalSavings);
     document.getElementById('pdf-disc-s').textContent = fmtPct(calcData.discount);
     document.getElementById('pdf-term-t').textContent = calcData.term + ' years';
     document.getElementById('pdf-ppaesc-t').textContent = (calcData.ppaEsc * 100).toFixed(1) + '% per annum';
-    document.getElementById('pdf-eskesc-t').textContent = (calcData.eskEsc * 100).toFixed(1) + '% per annum';
+    document.getElementById('pdf-eskesc-t').textContent = (calcData.eskomEsc * 100).toFixed(1) + '% per annum';
   }
 }
 
@@ -1620,17 +1652,14 @@ function toggleMenu() {
 
 function showSectionMobile(id) {
   showSection(id, null);
-  // update active state in mobile menu
   document.querySelectorAll('.mobile-menu a').forEach(a => a.classList.remove('active'));
   const sections = ['hero','calculator','capacity','cfo','onboarding'];
   const idx = sections.indexOf(id);
   if (idx >= 0) document.querySelectorAll('.mobile-menu a')[idx].classList.add('active');
-  // close menu
   document.getElementById('hamburger').classList.remove('open');
   document.getElementById('mobile-menu').classList.remove('open');
 }
 
-// close mobile menu on outside tap
 document.addEventListener('click', function(e) {
   const menu = document.getElementById('mobile-menu');
   const btn = document.getElementById('hamburger');
@@ -1642,10 +1671,31 @@ document.addEventListener('click', function(e) {
 
 // ---- INIT ----
 window.onload = function() {
-  calcPPA();
-  populateCFO();
-  document.getElementById('pdf-today').textContent = new Date().toLocaleDateString('en-ZA', { day: 'numeric', month: 'long', year: 'numeric' });
+  // attach slider listeners for live updates
+  const refresh = () => {
+    const sliders = ['allocation-slider', 'escalation-slider', 'ppa-esc-slider', 'term-slider'];
+    sliders.forEach(id => {
+      const slider = document.getElementById(id);
+      if (slider) {
+        const valId = id.replace('-slider', '-val');
+        const unit = id === 'term-slider' ? ' yrs' : '%';
+        updateSliderLabel(id, valId, unit);
+      }
+    });
+    calcPPA();
+    populateCFO();
+  };
+  document.getElementById('monthly-spend').addEventListener('input', refresh);
+  document.getElementById('monthly-kwh').addEventListener('input', refresh);
+  document.getElementById('ppa-tariff').addEventListener('input', refresh);
+  document.getElementById('allocation-slider').addEventListener('input', refresh);
+  document.getElementById('escalation-slider').addEventListener('input', refresh);
+  document.getElementById('ppa-esc-slider').addEventListener('input', refresh);
+  document.getElementById('term-slider').addEventListener('input', refresh);
+  document.getElementById('industry-select').addEventListener('change', refresh);
+  refresh();
 };
 </script>
 </body>
 </html>
+```
