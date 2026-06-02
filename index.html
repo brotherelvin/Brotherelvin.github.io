@@ -704,59 +704,20 @@
     <div class="calc-inputs">
       <div class="field-group">
   <div class="field-group">
-  <label class="field-label">Monthly Eskom spend (R)</label>
-  <input type="text" class="field-input" id="monthly-spend" value="850,000.00" oninput="formatAccounting(this); calcPPA();">
+ <label class="field-label">Monthly Eskom spend (R)</label>
+
+<input type="number" class="field-input" id="monthly-spend" value="850000" oninput="calcPPA()">
+
 </div>
 
 <div class="field-group">
-  <label class="field-label">Average monthly consumption (kWh)</label>
-  <input type="text" class="field-input" id="monthly-kwh" value="500,000.00" oninput="formatAccounting(this); calcPPA();">
-</div>
 
-<script>
-function formatAccounting(input) {
-  // 1. Remove all existing commas and non-numeric characters, except the first decimal point
-  let value = input.value.replace(/,/g, '');
-  
-  // Prevent typing non-numbers (allows only digits and one decimal point)
-  value = value.replace(/[^0-9.]/g, '');
-  const parts = value.split('.');
-  if (parts.length > 2) parts.pop(); // Remove extra decimal points
-  value = parts.join('.');
+<label class="field-label">Average monthly consumption (kWh)</label>
 
-  // If the input is empty, don't format it
-  if (!value) {
-    input.value = '';
-    return;
-  }
+<input type="number" class="field-input" id="monthly-kwh" value="500000" oninput="calcPPA()">
 
-  // 2. Format the integer part with commas
-  let integerPart = parts[0];
-  let decimalPart = parts[1];
+</div> 
 
-  // Add commas every 3 digits
-  integerPart = Array.from(integerPart).reverse().reduce((acc, digit, idx) => {
-    return digit + (idx && idx % 3 === 0 ? ',' : '') + acc;
-  }, '');
-
-  // 3. Reconstruct the string to show the user as they type
-  if (decimalPart !== undefined) {
-    // Limit decimal places to 2 while typing
-    input.value = integerPart + '.' + decimalPart.substring(0, 2);
-  } else {
-    input.value = integerPart;
-  }
-}
-
-// Optional helper function for your calcPPA() logic
-// Use this inside calcPPA() to easily convert the formatted string back to a clean float
-function getNumericValue(id) {
-  const el = document.getElementById(id);
-  if (!el) return 0;
-  const cleanValue = el.value.replace(/,/g, '');
-  return parseFloat(cleanValue) || 0;
-}
-</script>
       <div class="field-group">
         <label class="field-label">PPA tariff offered (R/kWh)</label>
         <input type="number" class="field-input" id="ppa-tariff" value="1.20" step="0.01" oninput="calcPPA()">
