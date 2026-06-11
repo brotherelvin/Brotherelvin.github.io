@@ -4,6 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Energy Wheeling Development Platform - By Aethel Energy</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
   :root {
     --black: #0a0a0a;
@@ -1090,8 +1091,8 @@ window.populateCFO = window.populateCFO || function() {};
 
       <hr class="divider">
 
-      <button class="btn-gold" style="width:100%;margin-bottom:0.75rem;" onclick="printBrief()">Print / Save as PDF</button>
-      <p style="font-size:0.72rem;color:var(--text-muted);text-align:center;line-height:1.5;">Use browser print → Save as PDF for a clean export. Sidebar and nav are excluded automatically.</p>
+      <button class="btn-gold" style="width:100%;margin-bottom:0.75rem;" onclick="printBrief()">↓ Download as PDF</button>
+      <p style="font-size:0.72rem;color:var(--text-muted);text-align:center;line-height:1.5;">Downloads a clean branded PDF directly — no print dialog needed.</p>
    <button class="btn-gold" style="width:100%;margin-bottom:0.75rem;" onclick="showSection('onboarding', document.getElementById('link-onboarding'))">Proceed to Onboarding</button>
 
     </div>
@@ -1798,7 +1799,28 @@ function populateCFO() {
 }
 
 function printBrief() {
-  window.print();
+  var el = document.getElementById('cfo-preview');
+  var company = document.getElementById('cfo-company').value.trim() || 'Offtaker';
+  var ref = document.getElementById('cfo-ref').value.trim() || 'AE-Brief';
+  var filename = 'Aethel_Energy_CFO_Brief_' + company.replace(/[^a-zA-Z0-9]/g, '_') + '.pdf';
+
+  var opt = {
+    margin:       [10, 12, 10, 12],
+    filename:     filename,
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    pagebreak:    { mode: ['avoid-all', 'css'] }
+  };
+
+  // Temporarily force white background on preview for clean render
+  el.style.background = '#ffffff';
+  el.style.color = '#0a0a0a';
+
+  html2pdf().set(opt).from(el).save().then(function() {
+    el.style.background = '';
+    el.style.color = '';
+  });
 }
 
 // ---- ONBOARDING ----
