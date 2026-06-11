@@ -493,13 +493,50 @@
 
   /* ---- PRINT STYLES ---- */
   @media print {
-    nav, .cfo-sidebar, .page-header, #section-cfo .cfo-layout > .cfo-sidebar { display: none !important; }
-    .cfo-main { padding: 0; }
-    .cfo-preview { border: none; }
-    body { background: white; color: #0a0a0a; }
-    .section { display: block !important; padding-top: 0; }
-    #section-calculator, #section-capacity, #section-onboarding { display: none !important; }
-    #section-cfo { display: block !important; }
+    @page { margin: 0; size: A4; }
+
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+    html, body {
+      margin: 0 !important; padding: 0 !important;
+      background: #ffffff !important;
+      height: auto !important; overflow: visible !important;
+    }
+
+    /* Hide absolutely everything except the preview */
+    body > * { display: none !important; }
+
+    /* Show only section-cfo, and within it only cfo-preview */
+    #section-cfo {
+      display: block !important;
+      padding: 0 !important; margin: 0 !important;
+    }
+    .cfo-layout {
+      display: block !important;
+      padding: 0 !important; margin: 0 !important;
+    }
+    .cfo-sidebar { display: none !important; }
+    .cfo-main {
+      display: block !important;
+      padding: 0 !important; margin: 0 !important;
+    }
+    .cfo-preview {
+      display: block !important;
+      border: none !important;
+      padding: 0 !important; margin: 0 !important;
+      width: 100% !important;
+      box-shadow: none !important;
+    }
+
+    /* Ensure dark backgrounds print */
+    .pdf-header { background: #0a0a0a !important; color: #f5f2ec !important; }
+    .pdf-table th { background: #0a0a0a !important; color: #2a7de1 !important; }
+    .pdf-stat { background: #f5f2ec !important; }
+
+    /* Page header, nav, toast, other sections — all hidden */
+    nav, .page-header, .toast, .mobile-menu,
+    #section-calculator, #section-capacity, #section-onboarding,
+    .cfo-sidebar, #section-cfo .page-header { display: none !important; }
   }
 
   /* ---- HAMBURGER ---- */
@@ -1091,8 +1128,8 @@ window.populateCFO = window.populateCFO || function() {};
 
       <hr class="divider">
 
-      <button class="btn-gold" style="width:100%;margin-bottom:0.75rem;" onclick="printBrief()">↓ Download as PDF</button>
-      <p style="font-size:0.72rem;color:var(--text-muted);text-align:center;line-height:1.5;">Downloads a clean branded PDF directly — no print dialog needed.</p>
+      <button class="btn-gold" style="width:100%;margin-bottom:0.75rem;" onclick="printBrief()">Print / Save as PDF</button>
+      <p style="font-size:0.72rem;color:var(--text-muted);text-align:center;line-height:1.5;">Opens browser print → Save as PDF for a clean export. Only the brief is printed — no nav or sidebar.</p>
    <button class="btn-gold" style="width:100%;margin-bottom:0.75rem;" onclick="showSection('onboarding', document.getElementById('link-onboarding'))">Proceed to Onboarding</button>
 
     </div>
@@ -1799,28 +1836,7 @@ function populateCFO() {
 }
 
 function printBrief() {
-  var el = document.getElementById('cfo-preview');
-  var company = document.getElementById('cfo-company').value.trim() || 'Offtaker';
-  var ref = document.getElementById('cfo-ref').value.trim() || 'AE-Brief';
-  var filename = 'Aethel_Energy_CFO_Brief_' + company.replace(/[^a-zA-Z0-9]/g, '_') + '.pdf';
-
-  var opt = {
-    margin:       [10, 12, 10, 12],
-    filename:     filename,
-    image:        { type: 'jpeg', quality: 0.98 },
-    html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
-    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-    pagebreak:    { mode: ['avoid-all', 'css'] }
-  };
-
-  // Temporarily force white background on preview for clean render
-  el.style.background = '#ffffff';
-  el.style.color = '#0a0a0a';
-
-  html2pdf().set(opt).from(el).save().then(function() {
-    el.style.background = '';
-    el.style.color = '';
-  });
+  window.print();
 }
 
 // ---- ONBOARDING ----
