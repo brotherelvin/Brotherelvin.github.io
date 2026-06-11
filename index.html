@@ -1,0 +1,2103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Energy Wheeling Development Platform - By Aethel Energy</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --white: #f5f2ec;
+    --off-white: #ede9e1;
+    --gold: #2a7de1;
+    --gold-light: #5a9ff0;
+    --gold-dim: #1a5bb5;
+    --charcoal: #1a1a1a;
+    --mid: #2d2d2d;
+    --border: rgba(42,125,225,0.18);
+    --border-bright: rgba(42,125,225,0.45);
+    --text-muted: #6b7280;
+    --text-secondary: #9aa5b4;
+    --success: #4a7c59;
+    --danger: #8b3a3a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--black);
+    color: var(--white);
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Prevent iOS zoom on input focus */
+  @supports (-webkit-touch-callout: none) {
+    .field-input { font-size: 16px !important; }
+  }
+
+  /* Minimum tap target size for all interactive elements */
+  button, .step-item, .upload-zone, .mobile-menu a, .nav-links a {
+    -webkit-tap-highlight-color: transparent;
+  }
+  button { touch-action: manipulation; }
+
+  /* ---- NAV ---- */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.25rem 3rem;
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 0.5px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800; font-size: 1.1rem;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .nav-logo span { color: var(--white); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-secondary); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-links a.active { color: var(--gold); }
+
+  /* ---- SECTIONS ---- */
+  .section { display: none; padding-top: 80px; min-height: 100vh; }
+  .section.active { display: block; }
+
+  /* ---- HERO ---- */
+  #hero {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    min-height: 100vh;
+    text-align: center;
+    padding: 80px 2rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  #hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 50% at 50% 60%, rgba(42,125,225,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-eyebrow {
+    font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 1.5rem;
+    border: 0.5px solid var(--border-bright);
+    padding: 0.35rem 1rem; border-radius: 20px;
+    display: inline-block;
+  }
+  .hero-te {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: clamp(2.8rem, 6vw, 5.5rem);
+    line-height: 1.0; letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+  }
+  .hero-te em { font-style: normal; color: var(--gold); }
+  .hero-sub {
+    font-size: 1.05rem; color: var(--text-secondary);
+    max-width: 520px; line-height: 1.7;
+    margin-bottom: 3rem; font-weight: 300;
+  }
+  .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+  .btn-gold {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 0.85rem 2rem;
+    background: var(--gold); color: var(--white);
+    border: none; border-radius: 3px; cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .btn-gold:hover { background: var(--gold-light); transform: translateY(-1px); }
+  .btn-outline {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 0.85rem 2rem;
+    background: transparent; color: var(--gold);
+    border: 0.5px solid var(--border-bright); border-radius: 3px; cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .btn-outline:hover { background: rgba(42,125,225,0.08); border-color: var(--gold); }
+
+  .hero-stats {
+    margin-top: 5rem;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 0; border: 0.5px solid var(--border);
+    max-width: 640px; width: 100%;
+  }
+  .hero-stat {
+    padding: 1.5rem 2rem; text-align: center;
+    border-right: 0.5px solid var(--border);
+  }
+  .hero-stat:last-child { border-right: none; }
+  .hero-stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.8rem; font-weight: 700;
+    color: var(--gold); display: block;
+  }
+  .hero-stat-label {
+    font-size: 0.7rem; text-transform: uppercase;
+    letter-spacing: 0.12em; color: var(--text-muted);
+    margin-top: 0.25rem; display: block;
+  }
+
+  /* ---- CALCULATOR ---- */
+.page-header {
+    padding: 4rem 3rem 2rem;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .page-eyebrow {
+    font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 0.75rem;
+  }
+  .page-te {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.8rem, 3vw, 2.8rem);
+    font-weight: 700; line-height: 1.1;
+  }
+  .page-title em { font-style: normal; color: var(--gold); }
+  .page-sub { font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem; font-weight: 300; }
+
+  .calc-layout {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0; min-height: calc(100vh - 200px);
+  }
+  .calc-inputs {
+    padding: 2.5rem 3rem;
+    border-right: 0.5px solid var(--border);
+  }
+  .calc-results {
+    padding: 2.5rem 3rem;
+    background: rgba(42,125,225,0.02);
+  }
+
+  .field-group { margin-bottom: 1.75rem; }
+  .field-label {
+    display: block; font-size: 0.72rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 0.5rem;
+  }
+  .field-input {
+    width: 100%; padding: 0.75rem 1rem;
+    background: var(--charcoal);
+    border: 0.5px solid var(--border);
+    border-radius: 2px; color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem; font-weight: 400;
+    transition: border-color 0.2s;
+  }
+  .field-input:focus {
+    outline: none;
+    border-color: var(--gold-dim);
+    background: #1e1e1e;
+  }
+  select.field-input option { background: #1a1a1a; }
+  .field-hint { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.35rem; }
+
+  .slider-row { display: flex; align-items: center; gap: 1rem; }
+  input[type=range] {
+    flex: 1; -webkit-appearance: none; height: 2px;
+    background: var(--border); border-radius: 2px; cursor: pointer;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 16px; height: 16px;
+    border-radius: 50%; background: var(--gold); cursor: pointer;
+  }
+  .slider-val {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.9rem; color: var(--gold); min-width: 48px; text-align: right;
+  }
+
+  /* Results */
+  .result-card {
+    background: var(--charcoal);
+    border: 0.5px solid var(--border);
+    border-radius: 2px; padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .result-label {
+    font-size: 0.68rem; text-transform: uppercase;
+    letter-spacing: 0.14em; color: var(--text-muted);
+    margin-bottom: 0.4rem;
+  }
+  .result-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem; font-weight: 700; color: var(--gold);
+  }
+  .result-sub { font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.25rem; }
+
+  .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+  .result-grid .result-card { margin-bottom: 0; }
+  .result-grid .result-value { font-size: 1.4rem; }
+
+  .savings-bar-wrap { margin: 1.5rem 0; }
+  .savings-bar-label {
+    display: flex; justify-content: space-between;
+    font-size: 0.7rem; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--text-muted);
+    margin-bottom: 0.5rem;
+  }
+  .savings-bar-track {
+    height: 6px; background: var(--mid);
+    border-radius: 3px; overflow: hidden;
+  }
+  .savings-bar-fill {
+    height: 100%; background: var(--gold);
+    border-radius: 3px; transition: width 0.4s ease;
+  }
+  .divider { border: none; border-top: 0.5px solid var(--border); margin: 1.5rem 0; }
+
+
+  /* ---- CAPACITY ---- */
+  .cap-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px; background: var(--border);
+    margin: 2rem 3rem;
+  }
+  .cap-cell {
+    background: var(--black);
+    padding: 2rem 1.5rem;
+    transition: background 0.2s;
+  }
+  .cap-cell:hover { background: rgba(42,125,225,0.04); }
+  .cap-icon {
+    width: 40px; height: 40px;
+    border: 0.5px solid var(--border-bright);
+    border-radius: 2px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1.25rem;
+    font-size: 1.1rem;
+  }
+  .cap-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.4rem; font-weight: 800;
+    color: var(--gold); line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+  .cap-unit {
+    font-size: 0.8rem; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    margin-bottom: 0.75rem;
+  }
+  .cap-desc { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; font-weight: 300; }
+
+  .tech-strip {
+    margin: 0 3rem 3rem;
+    border: 0.5px solid var(--border);
+    padding: 2rem;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem;
+  }
+  .tech-item-label {
+    font-size: 0.68rem; text-transform: uppercase;
+    letter-spacing: 0.14em; color: var(--text-muted);
+    margin-bottom: 0.4rem;
+  }
+  .tech-item-val { font-size: 1rem; font-weight: 500; color: var(--white); }
+
+  /* ---- CFO PDF ---- */
+  .cfo-layout {
+    display: grid; grid-template-columns: 320px 1fr;
+    min-height: calc(100vh - 80px);
+  }
+  .cfo-sidebar {
+    padding: 2.5rem 2rem;
+    border-right: 0.5px solid var(--border);
+    background: rgba(42,125,225,0.02);
+  }
+  .cfo-main { padding: 2.5rem 3rem; }
+
+  .cfo-preview {
+    background: #fff; color: #0a0a0a;
+    padding: 0; min-height: 800px;
+    font-family: 'DM Sans', sans-serif;
+    border: 0.5px solid var(--border);
+  }
+  .pdf-header {
+    background: #0a0a0a; color: #f5f2ec;
+    padding: 2.5rem; display: flex;
+    justify-content: space-between; align-items: flex-end;
+  }
+  .pdf-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem; font-weight: 800;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: #2a7de1;
+  }
+  .pdf-logo span { color: #f5f2ec; }
+  .pdf-meta { font-size: 0.75rem; color: #6b7280; text-align: right; }
+  .pdf-body { padding: 2.5rem; }
+  .pdf-project-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.8rem; font-weight: 700;
+    margin-bottom: 0.25rem; line-height: 1.1;
+  }
+  .pdf-project-sub { font-size: 0.85rem; color: #6b7280; margin-bottom: 2rem; }
+  .pdf-section-title {
+    font-size: 0.65rem; text-transform: uppercase;
+    letter-spacing: 0.16em; color: #2a7de1;
+    border-bottom: 0.5px solid #e8e0d0;
+    padding-bottom: 0.4rem; margin-bottom: 1rem;
+    margin-top: 1.75rem;
+  }
+  .pdf-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 0.5rem; }
+  .pdf-stat {
+    background: #f5f2ec; padding: 1rem;
+    border-left: 2px solid #2a7de1;
+  }
+  .pdf-stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.4rem; font-weight: 700;
+    color: #0a0a0a; display: block;
+  }
+  .pdf-stat-lbl { font-size: 0.7rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.1em; }
+  .pdf-text { font-size: 0.85rem; color: #3a3530; line-height: 1.7; margin-bottom: 0.75rem; }
+  .pdf-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  .pdf-table th {
+    background: #0a0a0a; color: #2a7de1;
+    padding: 0.6rem 0.75rem; text-align: left;
+    font-weight: 500; font-size: 0.68rem;
+    text-transform: uppercase; letter-spacing: 0.1em;
+  }
+  .pdf-table td { padding: 0.6rem 0.75rem; border-bottom: 0.5px solid #e8e0d0; color: #3a3530; }
+  .pdf-table tr:last-child td { border-bottom: none; }
+  .pdf-footer {
+    border-top: 0.5px solid #e8e0d0;
+    padding: 1.25rem 2.5rem;
+    display: flex; justify-content: space-between;
+    font-size: 0.7rem; color: #6b7280;
+  }
+  .pdf-confidential {
+    font-size: 0.65rem; text-transform: uppercase;
+    letter-spacing: 0.14em; color: #6b7280;
+    text-align: center; padding: 0.5rem 2.5rem 1.5rem;
+  }
+
+  /* ---- ONBOARDING ---- */
+  .onboard-layout {
+    display: grid; grid-template-columns: 360px 1fr;
+    min-height: calc(100vh - 80px);
+  }
+  .onboard-sidebar {
+    background: var(--charcoal);
+    padding: 3rem 2.5rem;
+    border-right: 0.5px solid var(--border);
+  }
+  .onboard-main { padding: 3rem; }
+
+  .step-list { list-style: none; margin-top: 2rem; }
+  .step-item {
+    display: flex; gap: 1rem; align-items: flex-start;
+    padding: 1rem 0;
+    border-bottom: 0.5px solid var(--border);
+    cursor: pointer; transition: opacity 0.2s;
+  }
+  .step-item:last-child { border-bottom: none; }
+  .step-num {
+    width: 28px; height: 28px; flex-shrink: 0;
+    border: 0.5px solid var(--border-bright);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 600;
+    font-family: 'Syne', sans-serif;
+    color: var(--text-muted);
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .step-item.active .step-num {
+    background: var(--gold); color: var(--white); border-color: var(--gold);
+  }
+  .step-item.done .step-num {
+    background: rgba(74,124,89,0.25); color: #6db88a; border-color: rgba(74,124,89,0.4);
+  }
+  .step-text { flex: 1; }
+  .step-name { font-size: 0.85rem; font-weight: 500; }
+  .step-desc { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem; }
+
+  .form-panel { display: none; }
+  .form-panel.active { display: block; }
+  .form-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.5rem; font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  .form-desc { font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 2rem; font-weight: 300; }
+
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .upload-zone {
+    border: 0.5px dashed var(--border-bright);
+    border-radius: 2px; padding: 2rem;
+    text-align: center; cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .upload-zone:hover { background: rgba(42,125,225,0.04); border-color: var(--gold-dim); }
+  .upload-icon { font-size: 2rem; margin-bottom: 0.75rem; opacity: 0.5; }
+  .upload-label { font-size: 0.85rem; color: var(--text-secondary); }
+  .upload-hint { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.35rem; }
+
+  .form-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 2.5rem; }
+
+  /* Progress bar */
+  .progress-bar {
+    height: 2px; background: var(--mid);
+    margin: 1.5rem 0;
+  }
+  .progress-fill {
+    height: 100%; background: var(--gold);
+    transition: width 0.4s ease;
+  }
+
+  /* Success screen */
+  .success-screen {
+    text-align: center; padding: 4rem 2rem;
+    display: none;
+  }
+  .success-screen.active { display: block; }
+  .success-icon {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: rgba(74,124,89,0.15);
+    border: 0.5px solid rgba(74,124,89,0.4);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; margin: 0 auto 1.5rem;
+    color: #6db88a;
+  }
+  .success-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.8rem; font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+  .success-text { font-size: 0.9rem; color: var(--text-secondary); max-width: 400px; margin: 0 auto 2rem; line-height: 1.7; font-weight: 300; }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 2rem; right: 2rem;
+    background: var(--charcoal); border: 0.5px solid var(--border-bright);
+    padding: 1rem 1.5rem; border-radius: 3px;
+    font-size: 0.85rem; color: var(--gold);
+    transform: translateY(100px); opacity: 0;
+    transition: transform 0.3s, opacity 0.3s;
+    z-index: 200;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* ---- PRINT STYLES ---- */
+  @media print {
+    nav, .cfo-sidebar, .page-header, #section-cfo .cfo-layout > .cfo-sidebar { display: none !important; }
+    .cfo-main { padding: 0; }
+    .cfo-preview { border: none; }
+    body { background: white; color: #0a0a0a; }
+    .section { display: block !important; padding-top: 0; }
+    #section-calculator, #section-capacity, #section-onboarding { display: none !important; }
+    #section-cfo { display: block !important; }
+  }
+
+  /* ---- HAMBURGER ---- */
+  .nav-hamburger {
+    display: none; flex-direction: column; gap: 5px;
+    cursor: pointer; padding: 4px; background: none; border: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .nav-hamburger span {
+    display: block; width: 22px; height: 1.5px;
+    background: var(--gold); border-radius: 2px;
+    transition: transform 0.25s, opacity 0.25s;
+  }
+  .nav-hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+  .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+  .nav-hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+  .mobile-menu {
+    display: none; position: fixed; top: 56px; left: 0; right: 0; z-index: 99;
+    background: rgba(10,10,10,0.98);
+    backdrop-filter: blur(16px);
+    border-bottom: 0.5px solid var(--border);
+    padding: 0;
+    flex-direction: column;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    display: block; padding: 1rem 1.5rem;
+    font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-secondary); text-decoration: none;
+    border-bottom: 0.5px solid var(--border);
+    transition: color 0.2s, background 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .mobile-menu a:last-child { border-bottom: none; }
+  .mobile-menu a:active, .mobile-menu a.active { color: var(--gold); background: rgba(42,125,225,0.06); }
+
+  /* ---- TABLET (900px) ---- */
+  @media (max-width: 900px) {
+    nav { padding: 0.9rem 1.25rem; }
+    .nav-links { display: none; }
+    .nav-hamburger { display: flex; }
+
+    .page-header { padding: 2rem 1.25rem 1.5rem; }
+
+    #hero { padding: 100px 1.25rem 3rem; }
+    .hero-stats { grid-template-columns: repeat(3,1fr); max-width: 100%; }
+    .hero-stat { padding: 1rem; }
+    .hero-stat-num { font-size: 1.4rem; }
+
+    .calc-layout { grid-template-columns: 1fr; }
+    .calc-inputs { padding: 1.5rem 1.25rem; border-right: none; border-bottom: 0.5px solid var(--border); }
+    .calc-results { padding: 1.5rem 1.25rem; }
+
+    .cap-grid { grid-template-columns: repeat(2,1fr); }
+    .cap-cell { padding: 1.5rem 1.25rem; }
+    .tech-strip { margin: 0 1.25rem 2rem; padding: 1.25rem; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+
+    .cfo-layout { grid-template-columns: 1fr; }
+    .cfo-sidebar { padding: 1.5rem 1.25rem; border-right: none; border-bottom: 0.5px solid var(--border); }
+    .cfo-main { padding: 1.5rem 1.25rem; }
+    .pdf-grid { grid-template-columns: 1fr 1fr; }
+
+    .onboard-layout { grid-template-columns: 1fr; }
+    .onboard-sidebar { padding: 1.5rem 1.25rem; border-right: none; border-bottom: 0.5px solid var(--border); }
+    .onboard-main { padding: 1.5rem 1.25rem; }
+    .step-list { margin-top: 1rem; }
+
+    .field-row { grid-template-columns: 1fr; gap: 0; }
+  }
+
+  /* ---- MOBILE (480px) ---- */
+  @media (max-width: 480px) {
+    nav { padding: 0.85rem 1rem; }
+
+    #hero { padding: 90px 1rem 2.5rem; }
+    .hero-eyebrow { font-size: 0.65rem; }
+    .hero-title { font-size: clamp(2.2rem, 9vw, 3.2rem); }
+    .hero-sub { font-size: 0.9rem; }
+    .hero-ctas { flex-direction: column; align-items: stretch; gap: 0.75rem; }
+    .btn-gold, .btn-outline { text-align: center; padding: 1rem 1.5rem; font-size: 0.8rem; }
+    .hero-stats { grid-template-columns: 1fr; border: 0.5px solid var(--border); }
+    .hero-stat { border-right: none; border-bottom: 0.5px solid var(--border); padding: 1rem 1.25rem; }
+    .hero-stat:last-child { border-bottom: none; }
+    .hero-stat-num { font-size: 1.6rem; }
+
+    .page-header { padding: 1.5rem 1rem 1.25rem; }
+    .page-title { font-size: clamp(1.4rem, 6vw, 2rem); }
+    .page-eyebrow { font-size: 0.65rem; }
+
+    .calc-inputs, .calc-results { padding: 1.25rem 1rem; }
+    .result-value { font-size: 1.6rem; }
+    .result-grid { grid-template-columns: 1fr; }
+    .result-grid .result-value { font-size: 1.3rem; }
+    .slider-row { gap: 0.75rem; }
+    .field-input { font-size: 1rem; padding: 0.85rem 0.9rem; }
+    input[type=range]::-webkit-slider-thumb { width: 20px; height: 20px; }
+
+    .cap-grid { grid-template-columns: 1fr; background: none; gap: 0; }
+    .cap-cell { padding: 1.25rem 1rem; border-bottom: 0.5px solid var(--border); }
+    .cap-cell:last-child { border-bottom: none; }
+    .cap-num { font-size: 2rem; }
+    .tech-strip { margin: 0 1rem 2rem; padding: 1rem; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .tech-item-val { font-size: 0.85rem; }
+
+    .cfo-sidebar, .cfo-main { padding: 1.25rem 1rem; }
+    .pdf-header { padding: 1.5rem; flex-direction: column; gap: 1rem; align-items: flex-start; }
+    .pdf-meta { text-align: left; }
+    .pdf-body { padding: 1.5rem; }
+    .pdf-grid { grid-template-columns: 1fr; gap: 0.75rem; }
+    .pdf-project-title { font-size: 1.3rem; }
+    .pdf-table { font-size: 0.78rem; }
+    .pdf-table th, .pdf-table td { padding: 0.5rem 0.6rem; }
+    .pdf-footer { flex-direction: column; gap: 0.35rem; padding: 1rem 1.5rem; }
+
+    .onboard-sidebar, .onboard-main { padding: 1.25rem 1rem; }
+    .step-item { padding: 0.85rem 0; }
+    .form-title { font-size: 1.25rem; }
+    .form-desc { font-size: 0.83rem; }
+    .upload-zone { padding: 1.5rem 1rem; }
+    .form-nav { flex-direction: column-reverse; gap: 0.75rem; }
+    .form-nav .btn-gold, .form-nav .btn-outline { width: 100%; text-align: center; padding: 1rem; }
+
+    .success-screen { padding: 2.5rem 1rem; }
+  }
+
+  /* ---- LARGE DESKTOP (1400px+) ---- */
+  @media (min-width: 1400px) {
+    nav { padding: 1.25rem 4rem; }
+    .page-header { padding: 4rem 4rem 2rem; }
+    .calc-inputs, .calc-results { padding: 3rem 4rem; }
+    .cap-grid { margin: 2rem 4rem; }
+    .tech-strip { margin: 0 4rem 3rem; }
+    .cfo-sidebar { padding: 3rem 2.5rem; }
+    .cfo-main { padding: 3rem 4rem; }
+    .onboard-sidebar { padding: 3rem; }
+    .onboard-main { padding: 3rem 4rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Aethel <span>Energy</span></div>
+  <ul class="nav-links">
+    <li><a href="#" onclick="showSection('hero', this)" class="active">Overview</a></li>
+    <li><a href="#" onclick="showSection('calculator', this)">PPA Calculator</a></li>
+    <li><a href="#" onclick="showSection('capacity', this)">Capacity</a></li>
+    <li><a href="#" onclick="showSection('cfo', this)">CFO Brief</a></li>
+    <li><a href="#" onclick="showSection('onboarding', this)">Onboarding</a></li>
+  </ul>
+  <button class="nav-hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#" onclick="showSectionMobile('hero')">Overview</a>
+  <a href="#" onclick="showSectionMobile('calculator')">PPA Calculator</a>
+  <a href="#" onclick="showSectionMobile('capacity')">Capacity</a>
+  <a href="#" onclick="showSectionMobile('cfo')">CFO Brief</a>
+  <a href="#" onclick="showSectionMobile('onboarding')">Onboarding</a>
+</div>
+
+<!-- HERO -->
+<div id="section-hero" class="section active">
+  <section id="hero">
+    <div class="hero-eyebrow">Energy Wheeling Development Platform</div>
+    <h1 class="hero-title">Commerical & Industrial Energy<br><em>Ownership</em> Starts Here</h1>
+    <p class="hero-sub">Qualify your offtake position, model long-term savings, and secure wheeled renewable energy under a fixed PPA tariff — from first contact to energisation.</p>
+  <div class="hero-ctas">
+  <button class="btn-gold" onclick="showSection('calculator', document.querySelector('[onclick*=\'calculator\']'))">Model Your Savings</button>
+  <button class="btn-outline" onclick="showSection('onboarding', document.querySelector('[onclick*=\'onboarding\']'))">Begin Onboarding</button>
+</div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-num">500+</span>
+        <span class="hero-stat-label">MW Capacity Pipeline</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-num">up to 20year</span>
+        <span class="hero-stat-label">PPA Lifecycle</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-num">R0.00</span>
+        <span class="hero-stat-label">Upfront Capex to Offtaker</span>
+      </div>
+         <div class="hero-stat">
+        <span class="hero-stat-num">4.8GW</span>
+        <span class="hero-stat-label">In construction</span>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- CALCULATOR -->
+<div id="section-calculator" class="section">
+  <div class="page-header">
+    <div class="page-eyebrow">Module 01 — Financial Modeling</div>
+    <h2 class="page-title">PPA Lifecycle <em>Savings</em> Calculator</h2>
+    <p class="page-sub">Model your energy cost trajectory under a fixed wheeling PPA tariff vs projected Eskom grid costs.</p>
+  </div>
+  <div class="calc-layout">
+    <div class="calc-inputs">
+      
+      <div class="field-group">
+        <label class="field-label">Monthly Eskom spend (R)</label>
+        <input type="number" class="field-input" id="monthly-spend" value="850000">
+      </div>
+      
+      <div class="field-group">
+        <label class="field-label">Average monthly consumption (kWh)</label>
+        <input type="number" class="field-input" id="monthly-kwh" value="500000">
+      </div>
+      
+      <div class="field-group">
+        <label class="field-label">PPA tariff offered (R/kWh)</label>
+        <input type="number" class="field-input" id="ppa-tariff" value="1.20" step="0.01">
+        <div class="field-hint">Wheeling PPA tariff inclusive of transmission/distribution losses. Typical range: R0.95 – R1.45/kWh.</div>
+      </div>
+      
+      <div class="field-group">
+        <label class="field-label">Amount of electricity to move to renewable</label>
+        <div class="slider-row">
+          <input type="range" min="0" max="100" value="30" step="5" id="allocation-slider">
+          <span class="slider-val" id="allocation-val">30%</span>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Eskom tariff escalation (% p.a.)</label>
+        <div class="slider-row">
+          <input type="range" min="4" max="15" value="8" step="0.5" id="escalation-slider">
+          <span class="slider-val" id="escalation-val">8%</span>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">PPA escalation (% p.a.)</label>
+        <div class="slider-row">
+          <input type="range" min="0" max="6" value="2" step="0.5" id="ppa-esc-slider">
+          <span class="slider-val" id="ppa-esc-val">2%</span>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">PPA term (years)</label>
+        <div class="slider-row">
+          <input type="range" min="5" max="20" value="20" step="1" id="term-slider">
+          <span class="slider-val" id="term-val">20 yrs</span>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Industry sector</label>
+        <select class="field-input" id="industry-select">
+          <option>Mining & Metals</option>
+          <option>Manufacturing</option>
+          <option>Agriculture & Cold Chain</option>
+          <option>Retail & Commercial</option>
+          <option>Data Centres</option>
+          <option>Chemicals & Petrochemicals</option>
+        </select>
+      </div>
+    </div>
+    <div class="calc-results">
+      <div class="result-card">
+        <div class="result-label">Total lifecycle savings over PPA term</div>
+        <div class="result-value" id="r-total-savings">R 0</div>
+        <div class="result-sub" id="r-savings-sub">vs projected Eskom spend</div>
+      </div>
+      <div class="result-grid">
+        <div class="result-card">
+          <div class="result-label">Year 1 saving</div>
+          <div class="result-value" id="r-yr1">R 0</div>
+          <div class="result-sub">per annum</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">Year <span id="r-last-yr">20</span> saving</div>
+          <div class="result-value" id="r-last">R 0</div>
+          <div class="result-sub">per annum</div>
+        </div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Effective tariff discount — Year 1</div>
+        <div class="result-value" id="r-discount">0%</div>
+        <div class="result-sub">PPA vs current Eskom rate</div>
+      </div>
+
+      <hr class="divider">
+
+      <div class="result-label" style="margin-bottom:0.75rem;font-size:0.68rem;text-transform:uppercase;letter-spacing:0.14em;color:var(--text-muted);">Eskom vs PPA cost trajectory</div>
+
+      <div id="chart-rows"></div>
+
+      <hr class="divider">
+
+      <div style="display:flex; gap:1rem; justify-content:flex-end;">
+        <button class="btn-outline" onclick="showSection('cfo', this); setTimeout(populateCFO, 50);">Generate CFO Brief →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Helper: format South African Rand (spaced thousands)
+function formatSA(num) {
+  return 'R ' + Math.round(num).toLocaleString('en-ZA');
+}
+
+// Update slider label text (badge)
+// 1. Updates slider label text badges
+function updateSliderLabel(sliderId, valId, unit) {
+  const slider = document.getElementById(sliderId);
+  const display = document.getElementById(valId);
+  if (slider && display) {
+    display.textContent = slider.value + unit;
+  }
+}
+
+// Core financial calculation & UI update (FIXED: allocation now correctly influences hybrid cost)
+function calcPPA() {
+  // Read inputs
+  const monthlySpend = parseFloat(document.getElementById('monthly-spend').value) || 0;
+  const monthlyKwh = parseFloat(document.getElementById('monthly-kwh').value) || 0;
+  const ppaTariff = parseFloat(document.getElementById('ppa-tariff').value) || 0;
+  
+  // Sliders
+  const allocationPct = parseFloat(document.getElementById('allocation-slider').value) || 0;
+  const allocation = allocationPct / 100;
+  const eskomEsc = (parseFloat(document.getElementById('escalation-slider').value) || 8) / 100;
+  const ppaEsc = (parseFloat(document.getElementById('ppa-esc-slider').value) || 2) / 100;
+  const ppaTerm = parseInt(document.getElementById('term-slider').value, 10) || 20;
+
+  // Guard: valid inputs required
+  if (monthlySpend <= 0 || monthlyKwh <= 0) {
+    document.getElementById('r-total-savings').textContent = formatSA(0);
+    document.getElementById('r-savings-sub').textContent = `vs projected Eskom over ${ppaTerm} years`;
+    document.getElementById('r-yr1').textContent = formatSA(0);
+    document.getElementById('r-last-yr').textContent = ppaTerm;
+    document.getElementById('r-last').textContent = formatSA(0);
+    document.getElementById('r-discount').textContent = '0%';
+    document.getElementById('chart-rows').innerHTML = '<div style="color:#7c8db0; text-align:center; padding:1rem;">Enter valid monthly spend & consumption</div>';
+    return;
+  }
+
+  const annualKwh = monthlyKwh * 12;
+  const currentEskomRate = monthlySpend / monthlyKwh;  // R/kWh
+  let totalSavings = 0;
+  let yr1Savings = 0;
+  let finalSavings = 0;
+  let maxCost = 0;
+  let yearlyData = [];
+
+  for (let yr = 1; yr <= ppaTerm; yr++) {
+    const factorEskom = Math.pow(1 + eskomEsc, yr - 1);
+    const factorPpa = Math.pow(1 + ppaEsc, yr - 1);
+    const eskomRateYr = currentEskomRate * factorEskom;
+    const ppaRateYr = ppaTariff * factorPpa;
+
+    // Split annual consumption based on allocation slider
+    const renewableKwh = annualKwh * allocation;
+    const gridKwh = annualKwh * (1 - allocation);
+
+    // Baseline: if 100% grid at Eskom rate
+    const baselineCost = annualKwh * eskomRateYr;
+    // Hybrid: renewable portion at PPA rate, remaining at Eskom rate
+    const hybridCost = (renewableKwh * ppaRateYr) + (gridKwh * eskomRateYr);
+    const savings = baselineCost - hybridCost;
+
+    totalSavings += savings;
+    if (yr === 1) yr1Savings = savings;
+    if (yr === ppaTerm) finalSavings = savings;
+    if (baselineCost > maxCost) maxCost = baselineCost;
+
+    yearlyData.push({ year: yr, eskomCost: baselineCost, ppaCost: hybridCost, savings: savings });
+  }
+
+  const originalAnnualBill = monthlySpend * 12;
+  const discountPct = originalAnnualBill > 0 ? Math.max(0, (yr1Savings / originalAnnualBill) * 100) : 0;
+
+  // Update result cards
+  document.getElementById('r-total-savings').textContent = formatSA(totalSavings);
+  document.getElementById('r-savings-sub').textContent = `vs projected Eskom over ${ppaTerm} years`;
+  document.getElementById('r-yr1').textContent = formatSA(yr1Savings);
+  document.getElementById('r-last-yr').textContent = ppaTerm;
+  document.getElementById('r-last').textContent = formatSA(finalSavings);
+  document.getElementById('r-discount').textContent = Math.round(discountPct) + '%';
+
+  // Build dynamic chart rows (show key years for clarity)
+  const chartContainer = document.getElementById('chart-rows');
+  if (chartContainer && yearlyData.length) {
+    let html = '';
+    const scale = maxCost || 1;
+    // Show years 1, 5, 10, 15, term (or all if term <=10)
+    const displayYears = new Set();
+    displayYears.add(1);
+    if (ppaTerm >= 5) displayYears.add(5);
+    if (ppaTerm >= 10) displayYears.add(10);
+    if (ppaTerm >= 15) displayYears.add(15);
+    displayYears.add(ppaTerm);
+    const sortedYears = Array.from(displayYears).sort((a,b) => a-b);
+    sortedYears.forEach(y => {
+      const d = yearlyData[y-1];
+      if (!d) return;
+      const eskomWidth = (d.eskomCost / scale) * 100;
+      const ppaWidth = (d.ppaCost / scale) * 100;
+      html += `
+        <div style="margin-bottom: 1rem; font-size: 0.8rem; color: #fff;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+            <span>Year ${d.year}</span>
+            <span style="color: #00ffcc; font-weight: bold;">Save ${formatSA(d.savings)}</span>
+          </div>
+          <div style="display: flex; align-items: center; margin-bottom: 2px;">
+            <div style="width: 70px; font-size: 0.7rem; color: #aaa;">Grid Baseline</div>
+            <div style="background: rgba(255,255,255,0.1); flex-grow: 1; height: 6px; border-radius: 3px; overflow: hidden; margin-right: 10px;">
+              <div style="background: #e67e22; width: ${Math.min(100, eskomWidth)}%; height: 100%;"></div>
+            </div>
+            <div style="width: 110px; text-align: right; font-size: 0.75rem;">${formatSA(d.eskomCost)}</div>
+          </div>
+          <div style="display: flex; align-items: center;">
+            <div style="width: 70px; font-size: 0.7rem; color: #aaa;">PPA Hybrid</div>
+            <div style="background: rgba(255,255,255,0.1); flex-grow: 1; height: 6px; border-radius: 3px; overflow: hidden; margin-right: 10px;">
+              <div style="background: #00ffcc; width: ${Math.min(100, ppaWidth)}%; height: 100%;"></div>
+            </div>
+            <div style="width: 110px; text-align: right; font-size: 0.75rem;">${formatSA(d.ppaCost)}</div>
+          </div>
+        </div>
+      `;
+    });
+    chartContainer.innerHTML = html;
+  }
+}
+
+// Global references
+window.calcPPA = calcPPA;
+window.updateSlider = updateSliderLabel;
+
+// Set up all event listeners (no inline handlers needed)
+document.addEventListener('DOMContentLoaded', () => {
+  const refresh = () => {
+    updateSliderLabel('allocation-slider', 'allocation-val', '%');
+    updateSliderLabel('escalation-slider', 'escalation-val', '%');
+    updateSliderLabel('ppa-esc-slider', 'ppa-esc-val', '%');
+    updateSliderLabel('term-slider', 'term-val', ' yrs');
+    calcPPA();
+  };
+
+  // Numeric inputs
+  ['monthly-spend', 'monthly-kwh', 'ppa-tariff'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', refresh);
+  });
+
+  // All sliders (allocation, escalations, term)
+  ['allocation-slider', 'escalation-slider', 'ppa-esc-slider', 'term-slider'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', refresh);
+  });
+
+  // Industry selector
+  const industry = document.getElementById('industry-select');
+  if (industry) industry.addEventListener('change', refresh);
+
+  refresh();
+});
+
+// Stubs for external functions
+window.showSection = window.showSection || function() {};
+window.populateCFO = window.populateCFO || function() {};
+</script>
+  
+<!-- CAPACITY -->
+<div id="section-capacity" class="section">
+  <div class="page-header">
+    <div class="page-eyebrow">Module 02 — Infrastructure Overview</div>
+    <h2 class="page-title">Utility-Scale <em>Capacity</em> Module</h2>
+    <p class="page-sub">Partnering IPPs pipeline and delivery capabilities for industrial offtakers.</p>
+  </div>
+
+  <div class="cap-grid">
+    <div class="cap-cell">
+      <div class="cap-icon">☀</div>
+      <div class="cap-num">91</div>
+      <div class="cap-unit">MW — Solar PV</div>
+      <div class="cap-desc">Utility-scale ground-mount solar PV projects.. Energy is wheeled to offtakers via the Eskom or municipal grid under a Wheeling PPA. NERSA-registered under Section 34.</div>
+    </div>
+    <div class="cap-cell">
+      <div class="cap-icon">💨</div>
+      <div class="cap-num">435</div>
+      <div class="cap-unit">MW — Wind</div>
+      <div class="cap-desc">Onshore wind assets across Northern Cape and Western Cape corridors. Estimated capacity factor of 30% with LTSA agreements in place.</div>
+    </div>
+    <div class="cap-cell">
+  <div class="cap-icon">💧</div>
+  <div class="cap-num">4</div>
+  <div class="cap-unit">MW</div>
+  <div class="cap-desc">High-availability baseload power. Optimized for grid stability, long-term operational lifespan, and consistent energy dispatchability.</div>
+</div>
+    <div class="cap-cell">
+      <div class="cap-icon">🔗</div>
+      <div class="cap-num">24/7</div>
+      <div class="cap-unit">Command Centre</div>
+      <div class="cap-desc">State-of-the-art Command Centre monitering generation assets in real time.</div>
+    </div>
+    <div class="cap-cell">
+      <div class="cap-icon">🏗</div>
+      <div class="cap-num">6–18</div>
+      <div class="cap-unit">Months to energisation</div>
+      <div class="cap-desc">From signed LHOA to energisation. Modular designs, pre-approved grid connection applications and pre-qualified EPC contractors reduce development risk.</div>
+    </div>
+    <div class="cap-cell">
+      <div class="cap-icon">📍</div>
+      <div class="cap-num">R0.00</div>
+      <div class="cap-unit">Capex to offtaker</div>
+      <div class="cap-desc">Offtakers pay a wheeling PPA tariff only — no capex, no grid connection costs, no IOPC or depreciation exposure on their balance sheet.</div>
+    </div>
+  </div>
+
+  <div class="tech-strip">
+    <div>
+      <div class="tech-item-label">Minimum offtake</div>
+      <div class="tech-item-val">500 kW</div>
+    </div>
+    <div>
+      <div class="tech-item-label">Preferred offtake</div>
+      <div class="tech-item-val">1 – 500 MW</div>
+    </div>
+    <div>
+      <div class="tech-item-label">Connection type</div>
+      <div class="tech-item-val">Wheeling (Eskom / Municipal)</div>
+    </div>
+    <div>
+      <div class="tech-item-label">NERSA Licence status</div>
+      <div class="tech-item-val">Partner license available</div>
+    </div>
+    <div>
+      <div class="tech-item-label">EPC partners</div>
+      <div class="tech-item-val">CIDB Grade 7+</div>
+    </div>
+    <div>
+      <div class="tech-item-label">Grid interconnect</div>
+      <div class="tech-item-val">Eskom Transmission & Distribution</div>
+    </div>
+    <div>
+      <div class="tech-item-label">O&M model</div>
+      <div class="tech-item-val">Full-service LTSA (25 yr)</div>
+    </div>
+    <div>
+      <div class="tech-item-label">PPA structure</div>
+      <div class="tech-item-val">Wheeling PPA (remote generation)</div>
+    </div>
+  </div>
+</div>
+
+<!-- CFO BRIEF -->
+<div id="section-cfo" class="section">
+  <div class="page-header">
+    <div class="page-eyebrow">Module 03 — Board-Ready Documentation</div>
+    <h2 class="page-title">CFO <em>Project Brief</em> Generator</h2>
+    <p class="page-sub">Auto-generated, branded brief for board submission or internal approval workflow.</p>
+  </div>
+
+  <div class="cfo-layout">
+    <div class="cfo-sidebar">
+      <p style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--gold);margin-bottom:1.25rem;">Brief configuration</p>
+
+      <div class="field-group">
+        <label class="field-label">Offtaker company name</label>
+        <input type="text" class="field-input" id="cfo-company" placeholder="e.g. Acme Industrials (Pty) Ltd" oninput="populateCFO()">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Contact name</label>
+        <input type="text" class="field-input" id="cfo-contact" placeholder="CFO / Finance Director" oninput="populateCFO()">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Project reference</label>
+        <input type="text" class="field-input" id="cfo-ref" placeholder="AE-2025-001" oninput="populateCFO()">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Proposed capacity (MW)</label>
+        <input type="number" class="field-input" id="cfo-mw" value="5" oninput="populateCFO()">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Technology type</label>
+        <select class="field-input" id="cfo-tech" onchange="populateCFO()">
+        <option value="solar-pv-wheeling">Solar PV (Wheeling)</option>
+    <option value="wind-wheeling">Wind (Wheeling)</option>
+    <option value="hydro-wheeling">Hydro (Wheeling)</option>
+    <option value="hybrid-wheeling">Hybrid Wheeling (Solar/Wind/Hydro)</option>
+        </select>
+      </div>
+
+      <hr class="divider">
+
+      <button class="btn-gold" style="width:100%;margin-bottom:0.75rem;" onclick="printBrief()">Print / Save as PDF</button>
+      <p style="font-size:0.72rem;color:var(--text-muted);text-align:center;line-height:1.5;">Use browser print → Save as PDF for a clean export. Sidebar and nav are excluded automatically.</p>
+   <button class="btn-gold" style="width:100%;margin-bottom:0.75rem;" onclick="showSection('onboarding', document.getElementById('link-onboarding'))">Proceed to Onboarding</button>
+
+    </div>
+
+    <div class="cfo-main">
+      <div class="cfo-preview" id="cfo-preview">
+        <div class="pdf-header">
+          <div>
+            <div class="pdf-logo">Aethel <span>Energy</span></div>
+            <div style="font-size:0.72rem;color:#6b7280;margin-top:0.35rem;">Infrastructure Development</div>
+          </div>
+          <div class="pdf-meta">
+            <div id="pdf-ref-top">Project Reference: AE-2025-001</div>
+            <div id="pdf-date-top">Prepared: <span id="pdf-today"></span></div>
+            <div>CONFIDENTIAL</div>
+          </div>
+        </div>
+
+        <div class="pdf-body">
+          <h1 class="pdf-project-title" id="pdf-title">Proposed PPA — Renewable Energy Offtake (Office Example Only)</h1>
+          <p class="pdf-project-sub" id="pdf-sub">Prepared for: &nbsp;<strong id="pdf-company-sub">—</strong> &nbsp;|&nbsp; Contact: <span id="pdf-contact-sub">—</span></p>
+
+          <p class="pdf-section-title">Executive Summary</p>
+          <p class="pdf-text" id="pdf-exec-summary">As a baseline example of a structure facilitated through the platform, a proposed Wheeling Power Purchase Agreement (PPA) outlines to supply <strong id="pdf-mw-s">5 MW</strong> of <strong id="pdf-tech-s">Solar PV (Ground-mount)</strong> capacity to the offtaker. Under this arrangement, the Independent Power Producer (IPP) finances, constructs, owns, and operates the remote generation asset. Electricity is wheeled to the offtaker's facility via the Eskom or municipal distribution network under a registered wheeling agreement. The offtaker purchases energy at a fixed, escalating tariff — with no capital expenditure, grid infrastructure cost, or asset ownership risk — generating material savings against projected Eskom grid costs over the PPA term.</p>
+
+          <p class="pdf-section-title">Financial Summary</p>
+          <div class="pdf-grid">
+            <div class="pdf-stat">
+              <span class="pdf-stat-num" id="pdf-yr1-s">R 0</span>
+              <span class="pdf-stat-lbl">Year 1 Annual Saving</span>
+            </div>
+            <div class="pdf-stat">
+              <span class="pdf-stat-num" id="pdf-total-s">R 0</span>
+              <span class="pdf-stat-lbl">Lifecycle Saving (PPA Term)</span>
+            </div>
+            <div class="pdf-stat">
+              <span class="pdf-stat-num" id="pdf-disc-s">0%</span>
+              <span class="pdf-stat-lbl">Year 1 Tariff Discount</span>
+            </div>
+                       
+          </div>
+
+          <p class="pdf-section-title">Commercial Terms</p>
+          <table class="pdf-table">
+            <thead>
+              <tr><th>Parameter</th><th>Detail</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Contract structure</td><td>Wheeling PPA — remote generation, grid delivery</td></tr>
+              <tr><td>PPA term</td><td id="pdf-term-t">20 years</td></tr>
+              <tr><td>Capacity</td><td id="pdf-mw-t">5 MW AC</td></tr>
+              <tr><td>Technology</td><td id="pdf-tech-t">Solar PV (Ground-mount)</td></tr>
+              <tr><td>Offtaker capex</td><td>R 0 — zero capital outlay</td></tr>
+              <tr><td>PPA tariff escalation</td><td id="pdf-ppaesc-t">2% per annum</td></tr>
+              <tr><td>Eskom escalation modelled</td><td id="pdf-eskesc-t">8% per annum</td></tr>
+              <tr><td>Delivery mechanism</td><td>Wheeling via Eskom / Municipal grid</td></tr>
+              <tr><td>Wheeling charge responsibility</td><td>Included in PPA tariff (net of losses)</td></tr>
+              <tr><td>Estimated energisation</td><td>12–18 months from signed wheeling agreement</td></tr>
+            </tbody>
+          </table>
+
+          <p class="pdf-section-title">Next Steps</p>
+          <table class="pdf-table">
+            <thead><tr><th>Step</th><th>Milestone</th><th>Responsibility</th></tr></thead>
+            <tbody>
+              <tr><td>0</td><td>Pre-Meeting Qualification</td><td>Aethel Energy</td></tr>
+              <tr><td>1</td><td>NDA + Site Access Agreement</td><td>Aethel Energy / Offtaker</td></tr>
+              <tr><td>2</td><td>12-month consumption data submission</td><td>Offtaker</td></tr>
+              <tr><td>3</td><td>Discovery Meeting (w/ Utility Partner)</td><td>Aethel Energy, Offtaker & Utility Partner</td></tr>
+              <tr><td>4</td><td>Indicative Tariff Letter (ITL)</td><td>Utility Partner</td></tr>
+              <tr><td>5</td><td>Municipal / Eskom wheeling concurrence</td><td>Utility Partner (supported by Offtaker)</td></tr>
+              <tr><td>6</td><td>Wheeling PPA execution</td><td>Aethel Energy, Offtaker & Utility Partner</td></tr>
+              <tr><td>7</td><td>Financial close, EPC award & energisation</td><td>Utility Partner</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="pdf-confidential">This document is prepared exclusively for the named offtaker. Not for distribution.</div>
+
+        <div class="pdf-footer">
+          <span>Aethel Energy (Pty) Ltd &nbsp;|&nbsp; Vereeniging, Gauteng</span>
+          <span id="pdf-ref-footer">AE-2025-001</span>
+        </div>
+      </div>
+    </div>
+   
+  </div>
+ 
+</div>
+ 
+  <!-- ONBOARDING -->
+<div id="section-onboarding" class="section">
+  <div class="page-header">
+    <div class="page-eyebrow">Module 04 — Secure File Submission</div>
+    <h2 class="page-title">Offtaker <em>Onboarding</em> Portal</h2>
+    <p class="page-sub">Submit your qualification documents to initiate the PPA process.</p>
+  </div>
+
+  <div class="onboard-layout">
+    <div class="onboard-sidebar">
+      <p style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--gold);">Onboarding progress</p>
+      <div class="progress-bar" style="margin-top:1rem;">
+        <div class="progress-fill" id="onboard-progress" style="width:25%;"></div>
+      </div>
+      <ul class="step-list">
+        <li class="step-item active" id="sli-1" onclick="sidebarGoStep(1)">
+          <div class="step-num">1</div>
+          <div class="step-text">
+            <div class="step-name">Company details</div>
+            <div class="step-desc">Entity info and contacts</div>
+          </div>
+        </li>
+        <li class="step-item" id="sli-2" onclick="sidebarGoStep(2)">
+          <div class="step-num">2</div>
+          <div class="step-text">
+            <div class="step-name">Energy profile</div>
+            <div class="step-desc">Consumption & site data</div>
+          </div>
+        </li>
+        <li class="step-item" id="sli-3" onclick="sidebarGoStep(3)">
+          <div class="step-num">3</div>
+          <div class="step-text">
+            <div class="step-name">Supporting documents</div>
+            <div class="step-desc">12-month bills, COR & NDA</div>
+          </div>
+        </li>
+        <li class="step-item" id="sli-4" onclick="sidebarGoStep(4)">
+          <div class="step-num">4</div>
+          <div class="step-text">
+            <div class="step-name">Review & submit</div>
+            <div class="step-desc">Confirm and send</div>
+          </div>
+        </li>
+      </ul>
+
+      <div style="margin-top:2rem;padding:1.25rem;background:rgba(42,125,225,0.06);border:0.5px solid var(--border);">
+        <p style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--gold);margin-bottom:0.5rem;">What happens next</p>
+        <p style="font-size:0.78rem;color:var(--text-secondary);line-height:1.6;font-weight:300;">Our development team reviews your submission within 3 business days and will send a correspondence with further steps.</p>
+      </div>
+    </div>
+
+    <div class="onboard-main">
+
+      <!-- STEP 1 -->
+      <div class="form-panel active" id="fp-1">
+        <h3 class="form-title">Company details</h3>
+        <p class="form-desc">Tell us about your organisation so we can prepare the right indicative offer.</p>
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Registered company name</label>
+            <input type="text" class="field-input" id="s1-company-name" placeholder="e.g. Acme Industrials (Pty) Ltd">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Company registration number</label>
+            <input type="text" class="field-input" id="s1-reg-number" placeholder="e.g. 2010/012345/07">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Contact person</label>
+            <input type="text" class="field-input" id="s1-contact-person" placeholder="Full name">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Designation</label>
+            <input type="text" class="field-input" id="s1-designation" placeholder="e.g. CFO, Energy Manager">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Email address</label>
+            <input type="email" class="field-input" id="s1-email" placeholder="name@company.co.za">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Contact number</label>
+            <input type="tel" class="field-input" id="s1-phone" placeholder="+27 XX XXX XXXX">
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Industry sector</label>
+          <select class="field-input" id="s1-industry">
+            <option value="">— Select sector —</option>
+            <option>Mining & Metals</option>
+            <option>Manufacturing</option>
+            <option>Agriculture & Cold Chain</option>
+            <option>Retail & Commercial</option>
+            <option>Data Centres</option>
+            <option>Chemicals & Petrochemicals</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div id="s1-error" style="display:none;color:#c97a7a;font-size:0.8rem;margin-top:0.75rem;padding:0.6rem 0.9rem;background:rgba(139,58,58,0.12);border:0.5px solid rgba(139,58,58,0.35);border-radius:2px;"></div>
+        <div class="form-nav">
+          <span style="font-size:0.78rem;color:var(--text-muted);">Step 1 of 4</span>
+          <button class="btn-gold" onclick="validateStep1()">Continue →</button>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="form-panel" id="fp-2">
+        <h3 class="form-title">Energy profile</h3>
+        <p class="form-desc">Consumption data helps us size the optimal generation solution and tariff structure.</p>
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Average monthly consumption (kWh)</label>
+            <input type="number" class="field-input" id="s2-monthly-kwh" placeholder="e.g. 500000">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Peak demand (kVA)</label>
+            <input type="number" class="field-input" id="s2-peak-demand" placeholder="e.g. 2500">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Current monthly Eskom spend (R)</label>
+            <input type="number" class="field-input" id="s2-monthly-spend" placeholder="e.g. 850000">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Eskom tariff category</label>
+            <select class="field-input" id="s2-tariff-category">
+              <option>Megaflex (Transmission)</option>
+              <option>Megaflex (Distribution)</option>
+              <option>Nightsave Urban</option>
+              <option>Businessrate</option>
+              <option>Other / Unknown</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Site address / GPS coordinates</label>
+          <input type="text" class="field-input" id="s2-site-address" placeholder="e.g. 15 Industrial Road, Vanderbijlpark, Gauteng">
+        </div>
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Available roof / land area (m²)</label>
+            <input type="number" class="field-input" id="s2-roof-area" placeholder="Optional">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Grid connection type</label>
+            <select class="field-input" id="s2-grid-connection">
+              <option>Wheeling (Eskom Transmission)</option>
+              <option>Wheeling (Municipal Distribution)</option>
+              <option>Behind-the-meter (supplementary)</option>
+              <option>Unsure</option>
+            </select>
+          </div>
+        </div>
+        <div id="s2-error" style="display:none;color:#c97a7a;font-size:0.8rem;margin-top:0.75rem;padding:0.6rem 0.9rem;background:rgba(139,58,58,0.12);border:0.5px solid rgba(139,58,58,0.35);border-radius:2px;"></div>
+        <div class="form-nav">
+          <button class="btn-outline" onclick="goStep(1)">← Back</button>
+          <button class="btn-gold" onclick="validateStep2()">Continue →</button>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="form-panel" id="fp-3">
+        <h3 class="form-title">Supporting documents</h3>
+        <p class="form-desc">Upload the following to complete your qualification submission. At least one document is required to proceed.</p>
+
+        <div class="field-group">
+          <label class="field-label">12-month Eskom bills (PDF or CSV)</label>
+          <div class="upload-zone" id="zone-bills" onclick="triggerFileInput('file-bills')">
+            <div class="upload-icon">📄</div>
+            <div class="upload-label">Click to upload or drag & drop</div>
+            <div class="upload-hint">PDF, CSV — max 20 MB per file</div>
+            <div id="bills-status" style="margin-top:0.5rem;font-size:0.8rem;color:var(--gold);display:none;"></div>
+          </div>
+          <input type="file" id="file-bills" accept=".pdf,.csv" style="display:none;" onchange="handleFileSelect(this,'bills-status','zone-bills')">
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Certificate of Incorporation (COR 14.3)</label>
+          <div class="upload-zone" id="zone-cor" onclick="triggerFileInput('file-cor')">
+            <div class="upload-icon">🏢</div>
+            <div class="upload-label">Click to upload</div>
+            <div class="upload-hint">PDF — max 5 MB</div>
+            <div id="cor-status" style="margin-top:0.5rem;font-size:0.8rem;color:var(--gold);display:none;"></div>
+          </div>
+          <input type="file" id="file-cor" accept=".pdf" style="display:none;" onchange="handleFileSelect(this,'cor-status','zone-cor')">
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Signed NDA (download template below)</label>
+          <div style="margin-bottom:0.75rem;">
+            <button class="btn-outline" style="font-size:0.75rem;padding:0.5rem 1rem;" onclick="showToast('NDA template — download will be available shortly')">↓ Download NDA template</button>
+          </div>
+          <div class="upload-zone" id="zone-nda" onclick="triggerFileInput('file-nda')">
+            <div class="upload-icon">✍</div>
+            <div class="upload-label">Upload signed NDA</div>
+            <div class="upload-hint">PDF — signed and dated</div>
+            <div id="nda-status" style="margin-top:0.5rem;font-size:0.8rem;color:var(--gold);display:none;"></div>
+          </div>
+          <input type="file" id="file-nda" accept=".pdf" style="display:none;" onchange="handleFileSelect(this,'nda-status','zone-nda')">
+        </div>
+
+        <div id="s3-error" style="display:none;color:#c97a7a;font-size:0.8rem;margin-top:0.75rem;padding:0.6rem 0.9rem;background:rgba(139,58,58,0.12);border:0.5px solid rgba(139,58,58,0.35);border-radius:2px;"></div>
+        <div class="form-nav">
+          <button class="btn-outline" onclick="goStep(2)">← Back</button>
+          <button class="btn-gold" onclick="validateStep3()">Continue →</button>
+        </div>
+      </div>
+
+     <!-- STEP 4 -->
+      <div class="form-panel" id="fp-4">
+        <h3 class="form-title">Review & submit</h3>
+        <p class="form-desc">Confirm your submission. Our team will review within 3 business days.</p>
+        <div style="background:var(--charcoal);border:0.5px solid var(--border);padding:1.5rem;margin-bottom:1.5rem;">
+          <p style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--gold);margin-bottom:1rem;">Submission checklist</p>
+          <div style="display:flex;flex-direction:column;gap:0.75rem;">
+            <div style="display:flex;gap:0.75rem;align-items:center;font-size:0.85rem;">
+              <span style="color:#6db88a;">✓</span> Company registration details
+            </div>
+            <div style="display:flex;gap:0.75rem;align-items:center;font-size:0.85rem;">
+              <span style="color:#6db88a;">✓</span> Energy profile and consumption data
+            </div>
+            <div id="s4-doc-check" style="display:flex;gap:0.75rem;align-items:center;font-size:0.85rem;">
+              <span id="s4-doc-icon" style="color:var(--text-muted);">○</span> <span id="s4-doc-label">Supporting documents uploaded</span>
+            </div>
+            <div style="display:flex;gap:0.75rem;align-items:center;font-size:0.85rem;">
+              <span style="color:var(--text-muted);">○</span> Submission will trigger automated acknowledgement email
+            </div>
+          </div>
+        </div>
+        <div style="background:rgba(42,125,225,0.05);border:0.5px solid var(--border-bright);padding:1rem 1.25rem;margin-bottom:1.5rem;">
+          <p style="font-size:0.8rem;color:var(--text-secondary);line-height:1.6;font-weight:300;">By submitting, you confirm that you are authorised to provide this information on behalf of your company and that the information provided is accurate to the best of your knowledge. All data is treated as confidential under our signed NDA.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:1rem;margin-bottom:1.75rem;">
+          <label style="display:flex;gap:0.85rem;align-items:flex-start;cursor:pointer;">
+            <input type="checkbox" id="chk-interest" onchange="checkSubmitReady()"
+              style="margin-top:3px;accent-color:var(--gold);width:16px;height:16px;flex-shrink:0;cursor:pointer;">
+            <span style="font-size:0.83rem;color:var(--text-secondary);line-height:1.55;font-weight:300;">I confirm interest in alternative energy solutions.</span>
+          </label>
+          <label style="display:flex;gap:0.85rem;align-items:flex-start;cursor:pointer;">
+            <input type="checkbox" id="chk-meeting" onchange="checkSubmitReady()"
+              style="margin-top:3px;accent-color:var(--gold);width:16px;height:16px;flex-shrink:0;cursor:pointer;">
+            <span style="font-size:0.83rem;color:var(--text-secondary);line-height:1.55;font-weight:300;">I confirm that I will attend the mandatory introductory meeting with Aethel Energy and its Utility Partner on an agreed day, whether telephonically or in-person.</span>
+          </label>
+        </div>
+        <div id="s4-error" style="display:none;color:#c97a7a;font-size:0.8rem;margin-bottom:1rem;padding:0.6rem 0.9rem;background:rgba(139,58,58,0.12);border:0.5px solid rgba(139,58,58,0.35);border-radius:2px;"></div>
+        <div class="form-nav">
+          <button class="btn-outline" onclick="goStep(3)">← Back</button>
+          <button class="btn-gold" id="submit-btn" onclick="submitOnboarding()" disabled
+            style="opacity:0.35;cursor:not-allowed;transition:opacity 0.25s;">Submit application →</button>
+        </div>
+      </div>
+      <!-- SUCCESS -->
+      <div class="success-screen" id="onboard-success">
+        <div class="success-icon">✓</div>
+        <h3 class="success-title">Application received</h3>
+        <p class="success-text">Your qualification submission has been logged. A member of the Aethel Energy development team will contact you within 3 business days with an Indicative Tariff Letter.</p>
+   <button class="btn-gold" onclick="showSection('calculator', document.querySelector('[onclick*=\'calculator\']'))">Back to calculator</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ---- SUBMIT GATE ----
+function checkSubmitReady() {
+  var hasDocs = uploadedFiles.bills && uploadedFiles.cor && uploadedFiles.nda;
+  var bothChecked = document.getElementById('chk-interest').checked && document.getElementById('chk-meeting').checked;
+  var ready = bothChecked && hasDocs;
+  var btn = document.getElementById('submit-btn');
+  btn.disabled = !ready;
+  btn.style.opacity = ready ? '1' : '0.35';
+  btn.style.cursor = ready ? 'pointer' : 'not-allowed';
+
+  // Update document checklist icon in Step 4
+  var docIcon = document.getElementById('s4-doc-icon');
+  var docLabel = document.getElementById('s4-doc-label');
+  if (docIcon && docLabel) {
+    if (hasDocs) {
+      docIcon.style.color = '#6db88a';
+      docIcon.textContent = '✓';
+      docLabel.textContent = 'All 3 documents uploaded: Eskom bills, COR 14.3, Signed NDA';
+    } else {
+      docIcon.style.color = 'var(--text-muted)';
+      docIcon.textContent = '○';
+      var missingDocs = [];
+      if (!uploadedFiles.bills) missingDocs.push('Eskom bills');
+      if (!uploadedFiles.cor)   missingDocs.push('COR 14.3');
+      if (!uploadedFiles.nda)   missingDocs.push('Signed NDA');
+      docLabel.textContent = 'Still missing: ' + missingDocs.join(', ');
+    }
+  }
+
+  // Show/hide error message
+  var errEl = document.getElementById('s4-error');
+  if (errEl) {
+    if (!ready && (document.getElementById('chk-interest').checked || document.getElementById('chk-meeting').checked)) {
+      var missing = [];
+      if (!hasDocs) missing.push('at least one supporting document');
+      if (!document.getElementById('chk-interest').checked) missing.push('interest confirmation');
+      if (!document.getElementById('chk-meeting').checked) missing.push('meeting confirmation');
+      errEl.textContent = 'Please complete: ' + missing.join(', ') + '.';
+      errEl.style.display = 'block';
+    } else {
+      errEl.style.display = 'none';
+    }
+  }
+}
+
+// ---- FILE UPLOAD STATE ----
+var uploadedFiles = { bills: null, cor: null, nda: null };
+
+function triggerFileInput(inputId) {
+  var input = document.getElementById(inputId);
+  if (input) input.click();
+}
+
+function handleFileSelect(input, statusId, zoneId) {
+  var file = input.files[0];
+  if (!file) return;
+
+  var key = input.id.replace('file-', '');
+  uploadedFiles[key] = file;
+
+  var st = document.getElementById(statusId);
+  if (st) {
+    st.style.display = 'block';
+    st.textContent = '✓ ' + file.name + ' (' + (file.size > 1048576 ? (file.size/1048576).toFixed(1) + ' MB' : Math.round(file.size/1024) + ' KB') + ') — ready for upload';
+  }
+  var zone = document.getElementById(zoneId);
+  if (zone) {
+    zone.style.borderColor = 'var(--gold-dim)';
+    zone.style.background = 'rgba(42,125,225,0.05)';
+  }
+
+  // Update submit gate if we're on step 4
+  if (currentStep === 4) checkSubmitReady();
+}
+
+// Drag & drop support
+document.addEventListener('DOMContentLoaded', function() {
+  var dropZones = [
+    { zone: 'zone-bills', input: 'file-bills', status: 'bills-status', key: 'bills' },
+    { zone: 'zone-cor',   input: 'file-cor',   status: 'cor-status',   key: 'cor'   },
+    { zone: 'zone-nda',   input: 'file-nda',   status: 'nda-status',   key: 'nda'   }
+  ];
+  dropZones.forEach(function(dz) {
+    var zone = document.getElementById(dz.zone);
+    if (!zone) return;
+    zone.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      zone.style.background = 'rgba(42,125,225,0.08)';
+      zone.style.borderColor = 'var(--gold)';
+    });
+    zone.addEventListener('dragleave', function() {
+      if (!uploadedFiles[dz.key]) {
+        zone.style.background = '';
+        zone.style.borderColor = '';
+      }
+    });
+    zone.addEventListener('drop', function(e) {
+      e.preventDefault();
+      var file = e.dataTransfer.files[0];
+      if (!file) return;
+      uploadedFiles[dz.key] = file;
+      var st = document.getElementById(dz.status);
+      if (st) {
+        st.style.display = 'block';
+        st.textContent = '✓ ' + file.name + ' (' + (file.size > 1048576 ? (file.size/1048576).toFixed(1) + ' MB' : Math.round(file.size/1024) + ' KB') + ') — ready for upload';
+      }
+      zone.style.borderColor = 'var(--gold-dim)';
+      zone.style.background = 'rgba(42,125,225,0.05)';
+      if (currentStep === 4) checkSubmitReady();
+    });
+  });
+});
+
+// ---- STEP VALIDATION ----
+function showError(elId, msg) {
+  var el = document.getElementById(elId);
+  if (!el) return;
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+function clearError(elId) {
+  var el = document.getElementById(elId);
+  if (el) el.style.display = 'none';
+}
+function highlightField(el, valid) {
+  if (!el) return;
+  el.style.borderColor = valid ? '' : 'rgba(201,100,100,0.6)';
+}
+
+function validateStep1() {
+  var fields = [
+    { id: 's1-company-name', label: 'Registered company name' },
+    { id: 's1-reg-number',   label: 'Company registration number' },
+    { id: 's1-contact-person', label: 'Contact person' },
+    { id: 's1-designation',  label: 'Designation' },
+    { id: 's1-email',        label: 'Email address' },
+    { id: 's1-phone',        label: 'Contact number' }
+  ];
+  var missing = [];
+  fields.forEach(function(f) {
+    var el = document.getElementById(f.id);
+    var ok = el && el.value.trim() !== '';
+    highlightField(el, ok);
+    if (!ok) missing.push(f.label);
+  });
+  // Industry select — must not be empty value
+  var ind = document.getElementById('s1-industry');
+  var indOk = ind && ind.value !== '';
+  highlightField(ind, indOk);
+  if (!indOk) missing.push('Industry sector');
+
+  // Basic email format check
+  var emailEl = document.getElementById('s1-email');
+  if (emailEl && emailEl.value.trim() !== '' && !emailEl.value.includes('@')) {
+    missing.push('Valid email address (must contain @)');
+    highlightField(emailEl, false);
+  }
+
+  if (missing.length > 0) {
+    showError('s1-error', 'Please complete the following fields: ' + missing.join(', ') + '.');
+    return;
+  }
+  clearError('s1-error');
+  goStep(2);
+}
+
+function validateStep2() {
+  var required = [
+    { id: 's2-monthly-kwh',   label: 'Average monthly consumption' },
+    { id: 's2-peak-demand',   label: 'Peak demand' },
+    { id: 's2-monthly-spend', label: 'Monthly Eskom spend' },
+    { id: 's2-site-address',  label: 'Site address' }
+  ];
+  var missing = [];
+  required.forEach(function(f) {
+    var el = document.getElementById(f.id);
+    var ok = el && el.value.trim() !== '' && (el.type !== 'number' || parseFloat(el.value) > 0);
+    highlightField(el, ok);
+    if (!ok) missing.push(f.label);
+  });
+  if (missing.length > 0) {
+    showError('s2-error', 'Please complete the following fields: ' + missing.join(', ') + '.');
+    return;
+  }
+  clearError('s2-error');
+  goStep(3);
+}
+
+function validateStep3() {
+  var missing = [];
+  if (!uploadedFiles.bills) missing.push('12-month Eskom bills');
+  if (!uploadedFiles.cor)   missing.push('Certificate of Incorporation (COR 14.3)');
+  if (!uploadedFiles.nda)   missing.push('Signed NDA');
+  if (missing.length > 0) {
+    showError('s3-error', 'All three documents are required. Still missing: ' + missing.join(', ') + '.');
+    return;
+  }
+  clearError('s3-error');
+  // Update Step 4 checklist on entry
+  checkSubmitReady();
+  goStep(4);
+}
+
+// ---- NAVIGATION ----
+function showSection(id, linkEl) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('section-' + id).classList.add('active');
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  if (linkEl) linkEl.classList.add('active');
+  if (!linkEl) {
+    const sections = ['hero','calculator','capacity','cfo','onboarding'];
+    const idx = sections.indexOf(id);
+    const desktopLinks = document.querySelectorAll('.nav-links a');
+    if (idx >= 0 && desktopLinks[idx]) desktopLinks[idx].classList.add('active');
+  }
+  window.scrollTo(0, 0);
+}
+
+// ---- CALCULATOR HELPERS (used by CFO) ----
+function fmtR(n) {
+  if (n >= 1e9) return 'R ' + (n/1e9).toFixed(1) + 'B';
+  if (n >= 1e6) return 'R ' + (n/1e6).toFixed(1) + 'M';
+  return 'R ' + Math.round(n).toLocaleString('en-ZA');
+}
+function fmtPct(n) { return Math.round(n) + '%'; }
+
+let calcData = {};
+
+// Override calcPPA to also store data for CFO
+window.calcPPA = function() {
+  const monthlySpend = parseFloat(document.getElementById('monthly-spend').value) || 0;
+  const monthlyKwh = parseFloat(document.getElementById('monthly-kwh').value) || 1;
+  const ppaTariff = parseFloat(document.getElementById('ppa-tariff').value) || 0;
+  const allocationPct = parseFloat(document.getElementById('allocation-slider').value) || 0;
+  const allocation = allocationPct / 100;
+  const eskomEsc = (parseFloat(document.getElementById('escalation-slider').value) || 8) / 100;
+  const ppaEsc = (parseFloat(document.getElementById('ppa-esc-slider').value) || 2) / 100;
+  const ppaTerm = parseInt(document.getElementById('term-slider').value, 10) || 20;
+
+  const annualKwh = monthlyKwh * 12;
+  const currentEskomRate = monthlySpend / monthlyKwh;
+  let totalSavings = 0;
+  let yr1Savings = 0;
+  let finalSavings = 0;
+  let maxCost = 0;
+  let yearlyData = [];
+
+  for (let yr = 1; yr <= ppaTerm; yr++) {
+    const factorEskom = Math.pow(1 + eskomEsc, yr - 1);
+    const factorPpa = Math.pow(1 + ppaEsc, yr - 1);
+    const eskomRateYr = currentEskomRate * factorEskom;
+    const ppaRateYr = ppaTariff * factorPpa;
+
+    const renewableKwh = annualKwh * allocation;
+    const gridKwh = annualKwh * (1 - allocation);
+    const baselineCost = annualKwh * eskomRateYr;
+    const hybridCost = (renewableKwh * ppaRateYr) + (gridKwh * eskomRateYr);
+    const savings = baselineCost - hybridCost;
+
+    totalSavings += savings;
+    if (yr === 1) yr1Savings = savings;
+    if (yr === ppaTerm) finalSavings = savings;
+    if (baselineCost > maxCost) maxCost = baselineCost;
+    yearlyData.push({ year: yr, eskomCost: baselineCost, ppaCost: hybridCost, savings: savings });
+  }
+
+  const originalAnnualBill = monthlySpend * 12;
+  const discountPct = originalAnnualBill > 0 ? Math.max(0, (yr1Savings / originalAnnualBill) * 100) : 0;
+
+  document.getElementById('r-total-savings').textContent = fmtR(totalSavings);
+  document.getElementById('r-savings-sub').textContent = `vs projected Eskom over ${ppaTerm} years`;
+  document.getElementById('r-yr1').textContent = fmtR(yr1Savings);
+  document.getElementById('r-last-yr').textContent = ppaTerm;
+  document.getElementById('r-last').textContent = fmtR(finalSavings);
+  document.getElementById('r-discount').textContent = fmtPct(discountPct);
+
+  const chartContainer = document.getElementById('chart-rows');
+  if (chartContainer && yearlyData.length) {
+    let html = '';
+    const scale = maxCost || 1;
+    const displayYears = new Set([1,5,10,15,ppaTerm]);
+    Array.from(displayYears).sort((a,b)=>a-b).forEach(y => {
+      const d = yearlyData[y-1];
+      if (!d) return;
+      const eskomWidth = (d.eskomCost / scale) * 100;
+      const ppaWidth = (d.ppaCost / scale) * 100;
+      html += `
+        <div style="margin-bottom: 1rem; font-size: 0.8rem; color: #fff;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+            <span>Year ${d.year}</span>
+            <span style="color: #00ffcc; font-weight: bold;">Save ${fmtR(d.savings)}</span>
+          </div>
+          <div style="display: flex; align-items: center; margin-bottom: 2px;">
+            <div style="width: 70px; font-size: 0.7rem; color: #aaa;">Grid Baseline</div>
+            <div style="background: rgba(255,255,255,0.1); flex-grow: 1; height: 6px; border-radius: 3px; overflow: hidden; margin-right: 10px;">
+              <div style="background: #e67e22; width: ${Math.min(100, eskomWidth)}%; height: 100%;"></div>
+            </div>
+            <div style="width: 110px; text-align: right; font-size: 0.75rem;">${fmtR(d.eskomCost)}</div>
+          </div>
+          <div style="display: flex; align-items: center;">
+            <div style="width: 70px; font-size: 0.7rem; color: #aaa;">PPA Hybrid</div>
+            <div style="background: rgba(255,255,255,0.1); flex-grow: 1; height: 6px; border-radius: 3px; overflow: hidden; margin-right: 10px;">
+              <div style="background: #00ffcc; width: ${Math.min(100, ppaWidth)}%; height: 100%;"></div>
+            </div>
+            <div style="width: 110px; text-align: right; font-size: 0.75rem;">${fmtR(d.ppaCost)}</div>
+          </div>
+        </div>
+      `;
+    });
+    chartContainer.innerHTML = html;
+  }
+
+  calcData = { yr1Savings, totalSavings, discount: discountPct, term: ppaTerm, ppaEsc, eskomEsc };
+};
+
+// ---- CFO BRIEF ----
+function populateCFO() {
+  const company = document.getElementById('cfo-company').value || '—';
+  const contact = document.getElementById('cfo-contact').value || '—';
+  const ref = document.getElementById('cfo-ref').value || 'AE-2025-001';
+  const mw = document.getElementById('cfo-mw').value || '5';
+  const tech = document.getElementById('cfo-tech').value;
+
+  const today = new Date().toLocaleDateString('en-ZA', { day: 'numeric', month: 'long', year: 'numeric' });
+  document.getElementById('pdf-today').textContent = today;
+  document.getElementById('pdf-ref-top').textContent = 'Project Reference: ' + ref;
+  document.getElementById('pdf-ref-footer').textContent = ref;
+  document.getElementById('pdf-title').textContent = 'Proposed PPA — Renewable Energy Offtake (office example only)';
+  document.getElementById('pdf-company-sub').textContent = company;
+  document.getElementById('pdf-contact-sub').textContent = contact;
+  document.getElementById('pdf-mw-s').textContent = mw + ' MW';
+  document.getElementById('pdf-tech-s').textContent = tech;
+  document.getElementById('pdf-mw-t').textContent = mw + ' MW AC';
+  document.getElementById('pdf-tech-t').textContent = tech;
+
+  if (calcData.yr1Savings) {
+    document.getElementById('pdf-yr1-s').textContent = fmtR(calcData.yr1Savings);
+    document.getElementById('pdf-total-s').textContent = fmtR(calcData.totalSavings);
+    document.getElementById('pdf-disc-s').textContent = fmtPct(calcData.discount);
+    document.getElementById('pdf-term-t').textContent = calcData.term + ' years';
+    document.getElementById('pdf-ppaesc-t').textContent = (calcData.ppaEsc * 100).toFixed(1) + '% per annum';
+    document.getElementById('pdf-eskesc-t').textContent = (calcData.eskomEsc * 100).toFixed(1) + '% per annum';
+  }
+}
+
+function printBrief() {
+  window.print();
+}
+
+// ---- ONBOARDING ----
+let currentStep = 1;
+// Track which steps have been validated/completed
+var completedSteps = { 1: false, 2: false, 3: false };
+
+function goStep(n) {
+  // Prevent jumping forward past unvalidated steps via sidebar clicks
+  // (Direct calls from validate functions are always allowed)
+  document.querySelectorAll('.form-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('fp-' + n).classList.add('active');
+  document.getElementById('onboard-success').classList.remove('active');
+
+  for (let i = 1; i <= 4; i++) {
+    const li = document.getElementById('sli-' + i);
+    li.classList.remove('active', 'done');
+    if (i < n) li.classList.add('done');
+    else if (i === n) li.classList.add('active');
+  }
+  currentStep = n;
+  const pct = Math.round((n / 4) * 100);
+  document.getElementById('onboard-progress').style.width = pct + '%';
+
+  // Refresh submit gate if landing on step 4
+  if (n === 4) {
+    // Reset checkboxes so user must re-confirm
+    var chk1 = document.getElementById('chk-interest');
+    var chk2 = document.getElementById('chk-meeting');
+    if (chk1) chk1.checked = false;
+    if (chk2) chk2.checked = false;
+    checkSubmitReady();
+  }
+
+  window.scrollTo(0, 0);
+}
+
+function submitOnboarding() {
+  var hasDocs = uploadedFiles.bills && uploadedFiles.cor && uploadedFiles.nda;
+  var bothChecked = document.getElementById('chk-interest').checked && document.getElementById('chk-meeting').checked;
+  if (!bothChecked || !hasDocs) {
+    var missing = [];
+    if (!hasDocs) {
+      var missingDocs = [];
+      if (!uploadedFiles.bills) missingDocs.push('Eskom bills');
+      if (!uploadedFiles.cor)   missingDocs.push('COR 14.3');
+      if (!uploadedFiles.nda)   missingDocs.push('Signed NDA');
+      missing.push('missing documents: ' + missingDocs.join(', '));
+    }
+    if (!bothChecked) missing.push('both confirmation checkboxes');
+    showError('s4-error', 'Please complete: ' + missing.join(' and ') + '.');
+    return;
+  }
+  clearError('s4-error');
+
+  var btn = document.getElementById('submit-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Submitting…'; }
+
+  var savePromise = (typeof window._saveOnboardingToFirestore === 'function')
+    ? window._saveOnboardingToFirestore()
+    : Promise.resolve(true);
+
+  savePromise.finally(function() {
+    document.querySelectorAll('.form-panel').forEach(p => p.classList.remove('active'));
+    for (var i = 1; i <= 4; i++) {
+      var li = document.getElementById('sli-' + i);
+      li.classList.remove('active');
+      li.classList.add('done');
+    }
+    document.getElementById('onboard-progress').style.width = '100%';
+    document.getElementById('onboard-success').classList.add('active');
+    showToast('Application submitted — files saved to secure storage');
+  });
+}
+
+// ---- SIDEBAR NAVIGATION GUARD ----
+// Sidebar can only go backward (or to current step) — forward nav requires validation
+function sidebarGoStep(n) {
+  if (n <= currentStep) {
+    goStep(n);
+  }
+  // Silently block forward navigation attempts from sidebar
+}
+
+// ---- TOAST ----
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ---- MOBILE NAV ----
+function toggleMenu() {
+  const btn = document.getElementById('hamburger');
+  const menu = document.getElementById('mobile-menu');
+  btn.classList.toggle('open');
+  menu.classList.toggle('open');
+}
+
+function showSectionMobile(id) {
+  showSection(id, null);
+  document.querySelectorAll('.mobile-menu a').forEach(a => a.classList.remove('active'));
+  const sections = ['hero','calculator','capacity','cfo','onboarding'];
+  const idx = sections.indexOf(id);
+  if (idx >= 0) document.querySelectorAll('.mobile-menu a')[idx].classList.add('active');
+  document.getElementById('hamburger').classList.remove('open');
+  document.getElementById('mobile-menu').classList.remove('open');
+}
+
+document.addEventListener('click', function(e) {
+  const menu = document.getElementById('mobile-menu');
+  const btn = document.getElementById('hamburger');
+  if (menu.classList.contains('open') && !menu.contains(e.target) && !btn.contains(e.target)) {
+    menu.classList.remove('open');
+    btn.classList.remove('open');
+  }
+});
+
+// ---- INIT ----
+window.onload = function() {
+  // attach slider listeners for live updates
+  const refresh = () => {
+    const sliders = ['allocation-slider', 'escalation-slider', 'ppa-esc-slider', 'term-slider'];
+    sliders.forEach(id => {
+      const slider = document.getElementById(id);
+      if (slider) {
+        const valId = id.replace('-slider', '-val');
+        const unit = id === 'term-slider' ? ' yrs' : '%';
+        updateSliderLabel(id, valId, unit);
+      }
+    });
+    calcPPA();
+    populateCFO();
+  };
+  document.getElementById('monthly-spend').addEventListener('input', refresh);
+  document.getElementById('monthly-kwh').addEventListener('input', refresh);
+  document.getElementById('ppa-tariff').addEventListener('input', refresh);
+  document.getElementById('allocation-slider').addEventListener('input', refresh);
+  document.getElementById('escalation-slider').addEventListener('input', refresh);
+  document.getElementById('ppa-esc-slider').addEventListener('input', refresh);
+  document.getElementById('term-slider').addEventListener('input', refresh);
+  document.getElementById('industry-select').addEventListener('change', refresh);
+  refresh();
+};
+</script>
+
+<!-- ===== FIREBASE ===== -->
+<script type="module">
+  import { initializeApp }    from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+  import { getAnalytics }     from "https://www.gstatic.com/firebasejs/12.14.0/firebase-analytics.js";
+  import { getFirestore, collection, addDoc, serverTimestamp }
+    from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL }
+    from "https://www.gstatic.com/firebasejs/12.14.0/firebase-storage.js";
+
+  const firebaseConfig = {
+    apiKey:            "AIzaSyDyJyKyH3ERhcSylwaY52N36onPaTijHnA",
+    authDomain:        "eidp-c576e.firebaseapp.com",
+    projectId:         "eidp-c576e",
+    storageBucket:     "eidp-c576e.firebasestorage.app",
+    messagingSenderId: "339253195780",
+    appId:             "1:339253195780:web:442df8850d8b5a880bb151",
+    measurementId:     "G-L9SS5PR5P4"
+  };
+
+  const app     = initializeApp(firebaseConfig);
+  getAnalytics(app);
+  const db      = getFirestore(app);
+  const storage = getStorage(app);
+
+  function val(id) {
+    var el = document.getElementById(id);
+    return el ? el.value.trim() : '';
+  }
+
+  async function uploadFile(file, folder, submissionId) {
+    var storageRef = ref(storage, 'onboarding/' + submissionId + '/' + folder + '/' + file.name);
+    var snapshot = await uploadBytes(storageRef, file);
+    var downloadUrl = await getDownloadURL(snapshot.ref);
+    return { name: file.name, path: snapshot.ref.fullPath, url: downloadUrl };
+  }
+
+  window._saveOnboardingToFirestore = async function() {
+    var submissionId = Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+
+    var btn = document.getElementById('submit-btn');
+    if (btn) btn.textContent = 'Uploading files…';
+
+    var billsMeta = null, corMeta = null, ndaMeta = null;
+    try {
+      var results = await Promise.all([
+        uploadFile(window.uploadedFiles.bills, 'eskom-bills', submissionId),
+        uploadFile(window.uploadedFiles.cor,   'cor-14-3',    submissionId),
+        uploadFile(window.uploadedFiles.nda,   'signed-nda',  submissionId)
+      ]);
+      billsMeta = results[0];
+      corMeta   = results[1];
+      ndaMeta   = results[2];
+    } catch (uploadErr) {
+      console.error('Storage upload failed:', uploadErr);
+    }
+
+    if (btn) btn.textContent = 'Saving details…';
+
+    var payload = {
+      submittedAt:   serverTimestamp(),
+      submissionId:  submissionId,
+
+      companyName:   val('s1-company-name'),
+      regNumber:     val('s1-reg-number'),
+      contactPerson: val('s1-contact-person'),
+      designation:   val('s1-designation'),
+      email:         val('s1-email'),
+      phone:         val('s1-phone'),
+      industry:      val('s1-industry'),
+
+      monthlyKwh:     val('s2-monthly-kwh'),
+      peakDemand:     val('s2-peak-demand'),
+      monthlySpend:   val('s2-monthly-spend'),
+      tariffCategory: val('s2-tariff-category'),
+      siteAddress:    val('s2-site-address'),
+      roofArea:       val('s2-roof-area'),
+      gridConnection: val('s2-grid-connection'),
+
+      docBills: billsMeta || null,
+      docCor:   corMeta   || null,
+      docNda:   ndaMeta   || null,
+
+      confirmedInterest: document.getElementById('chk-interest') ? document.getElementById('chk-interest').checked : false,
+      confirmedMeeting:  document.getElementById('chk-meeting')  ? document.getElementById('chk-meeting').checked  : false,
+    };
+
+    try {
+      var docRef = await addDoc(collection(db, 'onboarding_submissions'), payload);
+      console.log('Onboarding saved — Firestore ID:', docRef.id, '| Submission:', submissionId);
+      return true;
+    } catch (err) {
+      console.error('Firestore write failed:', err);
+      return false;
+    }
+  };
+</script>
+  <!-- Platform Footer Section -->
+<footer style="
+  margin-top: 5rem;
+  padding: 2.5rem 1.5rem;
+  border-top: 1px solid rgba(42,125,225,0.18);
+  background-color: var(--bg-dark, #0b0b0b);
+  color: #6b7280;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.75rem;
+  line-height: 1.6;
+  text-align: center;
+">
+  <div style="
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+  ">
+    <!-- Ownership & Copyright Line -->
+    <div style="
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    ">
+      <p style="margin: 0; font-weight: 400;">
+        The Energy Wheeling Development Platform is product of <strong>Aethelwine Homes (Pty) Ltd</strong>. All Rights Reserved.
+      </p>
+      <p style="margin: 0; color: var(--text-light, #ffffff); letter-spacing: 0.05em;">
+        &copy; 2026
+      </p>
+    </div>
+
+    <!-- Legal Disclaimer -->
+    <div style="
+      color: rgba(255, 255, 255, 0.4);
+      font-style: italic;
+      text-align: center;
+      max-width: 800px;
+    ">
+      <p style="margin: 0;">
+        <strong>Disclaimer:</strong> All information produced, modeled, or estimated by this platform does not constitute actual operational values. All metrics, financial trajectories, and capacity configurations serve purely as an estimate. Actual project terms and performance data are subject to formal site evaluation and final Independent Power Producer (IPP) legal agreements.
+      </p>
+    </div>
+
+    <!-- Terms & Privacy Links -->
+    <div style="margin-top: 0.5rem; display: flex; gap: 1.5rem; justify-content: center;">
+      <a href="https://firebasestorage.googleapis.com/v0/b/eidp-c576e.firebasestorage.app/o/Terms%20and%20Privacy%20Policy%20Aethel%20Energy%2FTerms%20and%20Conditions%20of%20Use%202.pdf?alt=media&token=27a5bbec-9868-4fa2-862a-8bf58e1fd861" style="color: #6b7280; font-size: 0.75rem; text-decoration: none;">Terms & Conditions</a>
+      <a href="https://firebasestorage.googleapis.com/v0/b/eidp-c576e.firebasestorage.app/o/Terms%20and%20Privacy%20Policy%20Aethel%20Energy%2FPrivacy%20Policy.pdf?alt=media&token=c2038e40-b66d-4fbd-98fe-c08c36a0317d" style="color: #6b7280; font-size: 0.75rem; text-decoration: none;">Privacy Policy</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  
+</footer>
+</body>
+</html>
