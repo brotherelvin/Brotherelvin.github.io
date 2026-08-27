@@ -1042,6 +1042,225 @@ window.populateCFO = window.populateCFO || function() {};
     <p class="page-sub">Auto-generated, branded brief for board submission or internal approval workflow.</p>
   </div>
 
+  <style>
+    .cfo-layout {
+      display: grid;
+      grid-template-columns: 310px 1fr;
+      min-height: calc(100vh - 80px);
+    }
+    .cfo-sidebar {
+      padding: 2.25rem 2rem;
+      border-right: 1px solid var(--border);
+      background: #ffffff;
+    }
+    .cfo-main {
+      padding: 2.25rem 3rem;
+      background: #f8fafc;
+    }
+    .cfo-preview {
+      background: #ffffff;
+      color: var(--navy);
+      padding: 0;
+      font-family: 'DM Sans', sans-serif;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      box-shadow: var(--shadow-md);
+    }
+    .pdf-header {
+      background: var(--navy);
+      color: #ffffff;
+      padding: 2.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .pdf-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--blue);
+    }
+    .pdf-logo span { color: #ffffff; }
+    .pdf-meta {
+      font-size: 0.73rem;
+      color: #94a3b8;
+      text-align: right;
+    }
+    .pdf-body { padding: 2.25rem; }
+    .pdf-project-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-bottom: 0.2rem;
+      line-height: 1.1;
+      color: var(--navy);
+    }
+    .pdf-project-sub {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      margin-bottom: 1.75rem;
+    }
+    .pdf-section-title {
+      font-size: 0.63rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--blue);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.35rem;
+      margin-bottom: 0.9rem;
+      margin-top: 1.5rem;
+      font-weight: 700;
+    }
+    .pdf-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .pdf-stat {
+      background: var(--blue-light);
+      padding: 0.9rem;
+      border-left: 3px solid var(--blue);
+      border-radius: 4px;
+    }
+    .pdf-stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--navy);
+      display: block;
+    }
+    .pdf-stat-lbl {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 600;
+    }
+    .pdf-text {
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 0.7rem;
+    }
+    .pdf-table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .pdf-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      min-width: 420px;
+    }
+    .pdf-table th {
+      background: var(--navy);
+      color: #ffffff;
+      padding: 0.55rem 0.75rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .pdf-table td {
+      padding: 0.55rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+    .pdf-table tr:last-child td { border-bottom: none; }
+    .pdf-footer {
+      border-top: 1px solid var(--border);
+      padding: 1.1rem 2.25rem;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+    .pdf-confidential {
+      font-size: 0.63rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+      text-align: center;
+      padding: 0.5rem 2.25rem 1.25rem;
+    }
+
+    /* ---- CFO MOBILE ---- */
+    @media (max-width: 900px) {
+      .cfo-layout {
+        grid-template-columns: 1fr;
+      }
+      .cfo-sidebar {
+        padding: 1.25rem;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .cfo-main {
+        padding: 1rem 0.75rem;
+      }
+      .cfo-preview {
+        border-radius: 4px;
+      }
+      .pdf-header {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1.25rem;
+        align-items: flex-start;
+      }
+      .pdf-meta {
+        text-align: left;
+      }
+      .pdf-body {
+        padding: 1rem;
+      }
+      .pdf-project-title {
+        font-size: 1.1rem;
+      }
+      .pdf-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+      }
+      .pdf-stat {
+        padding: 0.75rem;
+      }
+      .pdf-table-wrap {
+        margin: 0 -1rem;
+        padding: 0 1rem;
+      }
+      .pdf-footer {
+        flex-direction: column;
+        gap: 0.35rem;
+        padding: 1rem;
+        font-size: 0.65rem;
+      }
+      .pdf-confidential {
+        padding: 0.5rem 1rem 1rem;
+        font-size: 0.6rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .pdf-grid {
+        grid-template-columns: 1fr;
+      }
+      .pdf-stat-num {
+        font-size: 1.1rem;
+      }
+      .cfo-main {
+        padding: 0.75rem 0.5rem;
+      }
+      .pdf-body {
+        padding: 0.75rem;
+      }
+      .pdf-header {
+        padding: 1rem;
+      }
+    }
+  </style>
+
   <div class="cfo-layout">
     <div class="cfo-sidebar">
       <p style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--blue);margin-bottom:1.25rem;font-weight:600;">Brief configuration</p>
@@ -1076,15 +1295,16 @@ window.populateCFO = window.populateCFO || function() {};
 
       <button class="btn-gold" style="width:100%;margin-bottom:0.75rem;" onclick="printBrief()">Print / Save as PDF</button>
       <p style="font-size:0.72rem;color:var(--text-muted);text-align:center;line-height:1.5;">Opens browser print → Save as PDF for a clean export. Only the brief is printed — no nav or sidebar.</p>
-      <button class="btn-gold" style="width:100%;margin-bottom:0.75rem;" onclick="showSection('onboarding', document.getElementById('link-onboarding'))">Proceed to Onboarding</button>
+      <button class="btn-gold" style="width:100%;margin-top:0.75rem;" onclick="showSection('onboarding', document.getElementById('link-onboarding'))">Proceed to Onboarding</button>
     </div>
 
     <div class="cfo-main">
       <div class="cfo-preview" id="cfo-preview">
+
         <div class="pdf-header">
           <div>
             <div class="pdf-logo">Aethel <span>Energy</span></div>
-            <div style="font-size:0.72rem;color:var(--text-muted);margin-top:0.35rem;">Wheeling Development</div>
+            <div style="font-size:0.72rem;color:#94a3b8;margin-top:0.35rem;">Wheeling Development</div>
           </div>
           <div class="pdf-meta">
             <div id="pdf-ref-top">Project Reference: AE-2025-001</div>
@@ -1117,51 +1337,57 @@ window.populateCFO = window.populateCFO || function() {};
           </div>
 
           <p class="pdf-section-title">Commercial Terms</p>
-          <table class="pdf-table">
-            <thead>
-              <tr><th>Parameter</th><th>Detail</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>Contract structure</td><td>Wheeling PPA — remote generation, grid delivery</td></tr>
-              <tr><td>PPA term</td><td id="pdf-term-t">20 years</td></tr>
-              <tr><td>Capacity</td><td id="pdf-mw-t">5 MW AC</td></tr>
-              <tr><td>Technology</td><td id="pdf-tech-t">Solar PV (Ground-mount)</td></tr>
-              <tr><td>Offtaker capex</td><td>R 0 — zero capital outlay</td></tr>
-              <tr><td>PPA tariff escalation</td><td id="pdf-ppaesc-t">2% per annum</td></tr>
-              <tr><td>Eskom escalation modelled</td><td id="pdf-eskesc-t">8% per annum</td></tr>
-              <tr><td>Delivery mechanism</td><td>Wheeling via Eskom / Municipal grid</td></tr>
-              <tr><td>Wheeling charge responsibility</td><td>Included in PPA tariff (net of losses)</td></tr>
-              <tr><td>Estimated energisation</td><td>12–18 months from signed wheeling agreement</td></tr>
-            </tbody>
-          </table>
+          <div class="pdf-table-wrap">
+            <table class="pdf-table">
+              <thead>
+                <tr><th>Parameter</th><th>Detail</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Contract structure</td><td>Wheeling PPA — remote generation, grid delivery</td></tr>
+                <tr><td>PPA term</td><td id="pdf-term-t">20 years</td></tr>
+                <tr><td>Capacity</td><td id="pdf-mw-t">5 MW AC</td></tr>
+                <tr><td>Technology</td><td id="pdf-tech-t">Solar PV (Ground-mount)</td></tr>
+                <tr><td>Offtaker capex</td><td>R 0 — zero capital outlay</td></tr>
+                <tr><td>PPA tariff escalation</td><td id="pdf-ppaesc-t">2% per annum</td></tr>
+                <tr><td>Eskom escalation modelled</td><td id="pdf-eskesc-t">8% per annum</td></tr>
+                <tr><td>Delivery mechanism</td><td>Wheeling via Eskom / Municipal grid</td></tr>
+                <tr><td>Wheeling charge responsibility</td><td>Included in PPA tariff (net of losses)</td></tr>
+                <tr><td>Estimated energisation</td><td>12–18 months from signed wheeling agreement</td></tr>
+              </tbody>
+            </table>
+          </div>
 
           <p class="pdf-section-title">Next Steps</p>
-          <table class="pdf-table">
-            <thead><tr><th>Step</th><th>Milestone</th><th>Responsibility</th></tr></thead>
-            <tbody>
-              <tr><td>0</td><td>Pre-Meeting Qualification</td><td>Aethel Energy</td></tr>
-              <tr><td>1</td><td>NDA + Site Access Agreement</td><td>Aethel Energy / Offtaker</td></tr>
-              <tr><td>2</td><td>12-month consumption data submission</td><td>Offtaker</td></tr>
-              <tr><td>3</td><td>Discovery Meeting (w/ Utility Partner)</td><td>Aethel Energy, Offtaker & Utility Partner</td></tr>
-              <tr><td>4</td><td>Indicative Tariff Letter (ITL)</td><td>Utility Partner</td></tr>
-              <tr><td>5</td><td>Municipal / Eskom wheeling concurrence</td><td>Utility Partner (supported by Offtaker)</td></tr>
-              <tr><td>6</td><td>Wheeling PPA execution</td><td>Aethel Energy, Offtaker & Utility Partner</td></tr>
-              <tr><td>7</td><td>Financial close, EPC award & energisation</td><td>Utility Partner</td></tr>
-            </tbody>
-          </table>
+          <div class="pdf-table-wrap">
+            <table class="pdf-table">
+              <thead>
+                <tr><th>Step</th><th>Milestone</th><th>Responsibility</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>0</td><td>Pre-Meeting Qualification</td><td>Aethel Energy</td></tr>
+                <tr><td>1</td><td>NDA + Site Access Agreement</td><td>Aethel Energy / Offtaker</td></tr>
+                <tr><td>2</td><td>12-month consumption data submission</td><td>Offtaker</td></tr>
+                <tr><td>3</td><td>Discovery Meeting (w/ Utility Partner)</td><td>Aethel Energy, Offtaker & Utility Partner</td></tr>
+                <tr><td>4</td><td>Indicative Tariff Letter (ITL)</td><td>Utility Partner</td></tr>
+                <tr><td>5</td><td>Municipal / Eskom wheeling concurrence</td><td>Utility Partner (supported by Offtaker)</td></tr>
+                <tr><td>6</td><td>Wheeling PPA execution</td><td>Aethel Energy, Offtaker & Utility Partner</td></tr>
+                <tr><td>7</td><td>Financial close, EPC award & energisation</td><td>Utility Partner</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <div class="pdf-confidential">This document is prepared exclusively for the named offtaker. Not for distribution.</div>
 
         <div class="pdf-footer">
           <span>Aethelwine Homes (Pty) Ltd &nbsp;|&nbsp; Vereeniging, Gauteng</span>
-          <span id="pdf-ref-footer">AE-2025-001</span>
+          <span id="pdf-ref-footer">AE-2026-001</span>
         </div>
+
       </div>
     </div>
   </div>
 </div>
- 
   <!-- ONBOARDING -->
 <div id="section-onboarding" class="section">
   <div class="page-header">
