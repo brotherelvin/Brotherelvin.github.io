@@ -966,7 +966,7 @@ window.populateCFO = window.populateCFO || function() {};
 
   <div class="cfo-layout">
     <div class="cfo-sidebar">
-      <p style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--gold);margin-bottom:1.25rem;">Brief configuration</p>
+      <p style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--blue);margin-bottom:1.25rem;font-weight:600;">Brief configuration</p>
 
       <div class="field-group">
         <label class="field-label">Offtaker company name</label>
@@ -987,10 +987,10 @@ window.populateCFO = window.populateCFO || function() {};
       <div class="field-group">
         <label class="field-label">Technology type</label>
         <select class="field-input" id="cfo-tech" onchange="populateCFO()">
-        <option value="solar-pv-wheeling">Solar PV (Wheeling)</option>
-    <option value="wind-wheeling">Wind (Wheeling)</option>
-    <option value="hydro-wheeling">Hydro (Wheeling)</option>
-    <option value="hybrid-wheeling">Hybrid Wheeling (Solar/Wind/Hydro)</option>
+          <option value="solar-pv-wheeling">Solar PV (Wheeling)</option>
+          <option value="wind-wheeling">Wind (Wheeling)</option>
+          <option value="hydro-wheeling">Hydro (Wheeling)</option>
+          <option value="hybrid-wheeling">Hybrid Wheeling (Solar/Wind/Hydro)</option>
         </select>
       </div>
 
@@ -998,8 +998,7 @@ window.populateCFO = window.populateCFO || function() {};
 
       <button class="btn-gold" style="width:100%;margin-bottom:0.75rem;" onclick="printBrief()">Print / Save as PDF</button>
       <p style="font-size:0.72rem;color:var(--text-muted);text-align:center;line-height:1.5;">Opens browser print → Save as PDF for a clean export. Only the brief is printed — no nav or sidebar.</p>
-   <button class="btn-gold" style="width:100%;margin-bottom:0.75rem;" onclick="showSection('onboarding', document.getElementById('link-onboarding'))">Proceed to Onboarding</button>
-
+      <button class="btn-gold" style="width:100%;margin-bottom:0.75rem;" onclick="showSection('onboarding', document.getElementById('link-onboarding'))">Proceed to Onboarding</button>
     </div>
 
     <div class="cfo-main">
@@ -1007,7 +1006,7 @@ window.populateCFO = window.populateCFO || function() {};
         <div class="pdf-header">
           <div>
             <div class="pdf-logo">Aethel <span>Energy</span></div>
-            <div style="font-size:0.72rem;color:#6b7280;margin-top:0.35rem;">Wheeling Development</div>
+            <div style="font-size:0.72rem;color:var(--text-muted);margin-top:0.35rem;">Wheeling Development</div>
           </div>
           <div class="pdf-meta">
             <div id="pdf-ref-top">Project Reference: AE-2025-001</div>
@@ -1037,7 +1036,6 @@ window.populateCFO = window.populateCFO || function() {};
               <span class="pdf-stat-num" id="pdf-disc-s">0%</span>
               <span class="pdf-stat-lbl">Year 1 Tariff Discount</span>
             </div>
-                       
           </div>
 
           <p class="pdf-section-title">Commercial Terms</p>
@@ -1083,9 +1081,7 @@ window.populateCFO = window.populateCFO || function() {};
         </div>
       </div>
     </div>
-   
   </div>
- 
 </div>
  
   <!-- ONBOARDING -->
