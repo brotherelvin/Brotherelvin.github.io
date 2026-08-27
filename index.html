@@ -1561,7 +1561,7 @@ window.populateCFO = window.populateCFO || function() {};
           <div class="upload-zone" id="zone-bills" onclick="triggerFileInput('file-bills')">
             <div class="upload-icon">📄</div>
             <div class="upload-label">Click to upload or drag & drop</div>
-            <div class="upload-hint">PDF, CSV — max 20 MB per file</div>
+            <div class="upload-hint">PDF, CSV — Please upload the bills as one combined pdf as the system can't recieve multiple files</div>
             <div id="bills-status" style="margin-top:0.5rem;font-size:0.8rem;color:var(--gold);display:none;"></div>
           </div>
           <input type="file" id="file-bills" accept=".pdf,.csv" style="display:none;" onchange="handleFileSelect(this,'bills-status','zone-bills')">
