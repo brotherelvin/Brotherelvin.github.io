@@ -869,49 +869,48 @@ function calcPPA() {
   document.getElementById('r-last').textContent = formatSA(finalSavings);
   document.getElementById('r-discount').textContent = Math.round(discountPct) + '%';
 
-  // Build dynamic chart rows (show key years for clarity)
-  const chartContainer = document.getElementById('chart-rows');
-  if (chartContainer && yearlyData.length) {
-    let html = '';
-    const scale = maxCost || 1;
-    // Show years 1, 5, 10, 15, term (or all if term <=10)
-    const displayYears = new Set();
-    displayYears.add(1);
-    if (ppaTerm >= 5) displayYears.add(5);
-    if (ppaTerm >= 10) displayYears.add(10);
-    if (ppaTerm >= 15) displayYears.add(15);
-    displayYears.add(ppaTerm);
-    const sortedYears = Array.from(displayYears).sort((a,b) => a-b);
-    sortedYears.forEach(y => {
-      const d = yearlyData[y-1];
-      if (!d) return;
-      const eskomWidth = (d.eskomCost / scale) * 100;
-      const ppaWidth = (d.ppaCost / scale) * 100;
-      html += `
-        <div style="margin-bottom: 1rem; font-size: 0.8rem; color: #fff;">
-          <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
-            <span>Year ${d.year}</span>
-            <span style="color: #00ffcc; font-weight: bold;">Save ${formatSA(d.savings)}</span>
-          </div>
-          <div style="display: flex; align-items: center; margin-bottom: 2px;">
-            <div style="width: 70px; font-size: 0.7rem; color: #aaa;">Grid Baseline</div>
-            <div style="background: rgba(255,255,255,0.1); flex-grow: 1; height: 6px; border-radius: 3px; overflow: hidden; margin-right: 10px;">
-              <div style="background: #e67e22; width: ${Math.min(100, eskomWidth)}%; height: 100%;"></div>
-            </div>
-            <div style="width: 110px; text-align: right; font-size: 0.75rem;">${formatSA(d.eskomCost)}</div>
-          </div>
-          <div style="display: flex; align-items: center;">
-            <div style="width: 70px; font-size: 0.7rem; color: #aaa;">PPA Hybrid</div>
-            <div style="background: rgba(255,255,255,0.1); flex-grow: 1; height: 6px; border-radius: 3px; overflow: hidden; margin-right: 10px;">
-              <div style="background: #00ffcc; width: ${Math.min(100, ppaWidth)}%; height: 100%;"></div>
-            </div>
-            <div style="width: 110px; text-align: right; font-size: 0.75rem;">${formatSA(d.ppaCost)}</div>
-          </div>
+// Build dynamic chart rows (show key years for clarity)
+const chartContainer = document.getElementById('chart-rows');
+if (chartContainer && yearlyData.length) {
+  let html = '';
+  const scale = maxCost || 1;
+  // Show years 1, 5, 10, 15, term (or all if term <=10)
+  const displayYears = new Set();
+  displayYears.add(1);
+  if (ppaTerm >= 5) displayYears.add(5);
+  if (ppaTerm >= 10) displayYears.add(10);
+  if (ppaTerm >= 15) displayYears.add(15);
+  displayYears.add(ppaTerm);
+  const sortedYears = Array.from(displayYears).sort((a,b) => a-b);
+  sortedYears.forEach(y => {
+    const d = yearlyData[y-1];
+    if (!d) return;
+    const eskomWidth = (d.eskomCost / scale) * 100;
+    const ppaWidth = (d.ppaCost / scale) * 100;
+    html += `
+      <div style="margin-bottom: 1rem; font-size: 0.8rem; color: var(--navy);">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+          <span style="font-weight: 600;">Year ${d.year}</span>
+          <span style="color: var(--success); font-weight: 700;">Save ${formatSA(d.savings)}</span>
         </div>
-      `;
-    });
-    chartContainer.innerHTML = html;
-  }
+        <div style="display: flex; align-items: center; margin-bottom: 4px;">
+          <div style="width: 85px; font-size: 0.7rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Grid Baseline</div>
+          <div style="background: var(--border); flex-grow: 1; height: 6px; border-radius: 3px; overflow: hidden; margin-right: 10px;">
+            <div style="background: var(--text-muted); width: ${Math.min(100, eskomWidth)}%; height: 100%; border-radius: 3px;"></div>
+          </div>
+          <div style="width: 110px; text-align: right; font-size: 0.75rem; color: var(--navy); font-weight: 600;">${formatSA(d.eskomCost)}</div>
+        </div>
+        <div style="display: flex; align-items: center;">
+          <div style="width: 85px; font-size: 0.7rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">PPA Hybrid</div>
+          <div style="background: var(--border); flex-grow: 1; height: 6px; border-radius: 3px; overflow: hidden; margin-right: 10px;">
+            <div style="background: var(--blue); width: ${Math.min(100, ppaWidth)}%; height: 100%; border-radius: 3px;"></div>
+          </div>
+          <div style="width: 110px; text-align: right; font-size: 0.75rem; color: var(--navy); font-weight: 600;">${formatSA(d.ppaCost)}</div>
+        </div>
+      </div>
+    `;
+  });
+  chartContainer.innerHTML = html;
 }
 
 // Global references
