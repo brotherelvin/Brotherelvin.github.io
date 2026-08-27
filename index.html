@@ -1275,7 +1275,7 @@ window.populateCFO = window.populateCFO || function() {};
       </div>
       <div class="field-group">
         <label class="field-label">Project reference</label>
-        <input type="text" class="field-input" id="cfo-ref" placeholder="AE-2025-001" oninput="populateCFO()">
+        <input type="text" class="field-input" id="cfo-ref" placeholder="AE-2026-001" oninput="populateCFO()">
       </div>
       <div class="field-group">
         <label class="field-label">Proposed capacity (MW)</label>
@@ -1307,7 +1307,7 @@ window.populateCFO = window.populateCFO || function() {};
             <div style="font-size:0.72rem;color:#94a3b8;margin-top:0.35rem;">Wheeling Development</div>
           </div>
           <div class="pdf-meta">
-            <div id="pdf-ref-top">Project Reference: AE-2025-001</div>
+            <div id="pdf-ref-top">Project Reference: AE-2026-001</div>
             <div id="pdf-date-top">Prepared: <span id="pdf-today"></span></div>
             <div>CONFIDENTIAL</div>
           </div>
@@ -1977,7 +1977,7 @@ html += `
 function populateCFO() {
   const company = document.getElementById('cfo-company').value || '—';
   const contact = document.getElementById('cfo-contact').value || '—';
-  const ref = document.getElementById('cfo-ref').value || 'AE-2025-001';
+  const ref = document.getElementById('cfo-ref').value || 'AE-2026-001';
   const mw = document.getElementById('cfo-mw').value || '5';
   const tech = document.getElementById('cfo-tech').value;
 
