@@ -243,45 +243,113 @@
     font-size: 0.9rem; font-weight: 700; color: var(--blue); min-width: 44px; text-align: right;
   }
 
-  /* Results Cards */
-  .result-card {
-    background: #ffffff;
-    border: 1px solid var(--border);
-    border-radius: 6px; padding: 1.1rem 1.4rem;
-    margin-bottom: 1rem;
-    box-shadow: var(--shadow-sm);
-  }
-  .result-label {
-    font-size: 0.66rem; text-transform: uppercase;
-    letter-spacing: 0.14em; color: var(--text-muted);
-    margin-bottom: 0.35rem; font-weight: 600;
-  }
-  .result-value {
-    font-family: 'Syne', sans-serif;
-    font-size: 1.75rem; font-weight: 800; color: var(--blue); /* was 2rem */
-  }
-  .result-sub { font-size: 0.78rem; color: var(--text-secondary); margin-top: 0.2rem; }
+/* Results Cards */
+.result-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1.1rem 1.4rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
 
-  .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
-  .result-grid .result-card { margin-bottom: 0; }
-  .result-grid .result-value { font-size: 1.3rem; }
+.result-card:hover {
+  border-color: var(--border-bright);
+  box-shadow: var(--shadow-md);
+}
 
-  .savings-bar-wrap { margin: 1.25rem 0; }
-  .savings-bar-label {
-    display: flex; justify-content: space-between;
-    font-size: 0.68rem; text-transform: uppercase;
-    letter-spacing: 0.1em; color: var(--text-muted);
-    margin-bottom: 0.45rem; font-weight: 600;
-  }
-  .savings-bar-track {
-    height: 6px; background: #e2e8f0; /* was 8px — slightly trimmer */
-    border-radius: 3px; overflow: hidden;
-  }
-  .savings-bar-fill {
-    height: 100%; background: var(--blue);
-    border-radius: 3px; transition: width 0.4s ease;
-  }
-  .divider { border: none; border-top: 1px solid var(--border); margin: 1.25rem 0; }
+/* Featured / Key Highlight Card Option */
+.result-card.highlight {
+  background: var(--blue-light);
+  border-color: rgba(42, 125, 225, 0.3);
+}
+
+.result-label {
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+  margin-bottom: 0.35rem;
+  font-weight: 600;
+}
+
+.result-value {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--navy);
+}
+
+/* Accent highlight for monetary savings */
+.result-value.savings-accent {
+  color: var(--success);
+}
+
+.result-value.brand-accent {
+  color: var(--blue);
+}
+
+.result-sub {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin-top: 0.2rem;
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.result-grid .result-card {
+  margin-bottom: 0;
+}
+
+.result-grid .result-value {
+  font-size: 1.3rem;
+}
+
+/* Progress / Savings Bar */
+.savings-bar-wrap {
+  margin: 1.25rem 0;
+}
+
+.savings-bar-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: 0.45rem;
+  font-weight: 600;
+}
+
+.savings-bar-track {
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.savings-bar-fill {
+  height: 100%;
+  background: var(--blue);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+.savings-bar-fill.success {
+  background: var(--success);
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 1.25rem 0;
+}
 
   /* ---- CAPACITY ---- */
   .cap-grid {
