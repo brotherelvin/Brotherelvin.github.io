@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Energy Wheeling Explained — Aethel Energy South Africa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --gold:#C8922A;
+      --gold-light:#E8B84B;
+      --gold-pale:#FDF6E7;
+      --navy:#0A1628;
+      --navy-mid:#162340;
+      --white:#FFFFFF;
+      --off-white:#F7F8FA;
+      --grey:#6B7280;
+      --grey-light:#E5E7EB;
+      --text:#1A1A2E;
+      --radius:12px;
+      --shadow:0 4px 24px rgba(10,22,40,.08);
+      --shadow-lg:0 12px 48px rgba(10,22,40,.14);
+      --section-pad:clamp(3.5rem, 7vw, 6.5rem);
+      --container-pad:clamp(1rem, 4vw, 2.5rem);
+    }
+    html{scroll-behavior:smooth}
+    body{font-family:'Inter',sans-serif;color:var(--text);background:#fff;overflow-x:hidden;width:100%}
+
+    /* ── NAV ── */
+    nav{
+      position:fixed;top:0;left:0;width:100%;z-index:999;
+      background:rgba(255,255,255,.96);backdrop-filter:blur(12px);
+      border-bottom:1px solid var(--grey-light);
+      transition:box-shadow .3s;
+    }
+    nav.scrolled{box-shadow:var(--shadow)}
+    .nav-inner{
+      max-width:1280px;margin:0 auto;
+      display:flex;align-items:center;justify-content:space-between;
+      padding:0 var(--container-pad);height:68px;
+    }
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-logo img{width:32px;height:32px;flex-shrink:0}
+    .nav-logo-text{font-family:'Montserrat',sans-serif;font-weight:800;font-size:1rem;letter-spacing:.04em;color:var(--navy)}
+    .nav-logo-text span{color:var(--gold)}
+    .nav-links{display:flex;gap:clamp(16px,2.5vw,28px);list-style:none}
+    .nav-links a{font-size:.875rem;font-weight:500;color:var(--navy);text-decoration:none;letter-spacing:.02em;transition:color .2s;padding:8px 0}
+    .nav-links a:hover{color:var(--gold)}
+    .nav-cta{
+      background:var(--gold);color:#fff;border:none;
+      padding:10px 22px;border-radius:50px;
+      font-family:'Montserrat',sans-serif;font-weight:700;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;
+      cursor:pointer;text-decoration:none;transition:background .2s,transform .15s;
+      min-height:44px;display:inline-flex;align-items:center;justify-content:center;
+    }
+    .nav-cta:hover{background:var(--gold-light);transform:translateY(-1px)}
+    .hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;cursor:pointer;background:none;border:none;padding:8px;min-height:44px;min-width:44px}
+    .hamburger span{display:block;width:24px;height:2px;background:var(--navy);border-radius:2px;transition:.3s}
+    .mobile-menu{
+      display:none;position:fixed;top:68px;left:0;width:100%;
+      background:#fff;border-bottom:1px solid var(--grey-light);
+      padding:20px var(--container-pad);z-index:998;
+      flex-direction:column;gap:12px;box-shadow:var(--shadow);
+    }
+    .mobile-menu.open{display:flex}
+    .mobile-menu a{font-weight:500;color:var(--navy);text-decoration:none;font-size:1rem;padding:12px 0;border-bottom:1px solid var(--grey-light)}
+    .mobile-menu .nav-cta{text-align:center;margin-top:8px;width:100%}
+
+    /* ── HERO ── */
+    .hero{
+      min-height:100vh;
+      background:var(--navy);
+      display:grid;grid-template-columns:1.1fr 0.9fr;
+      align-items:center;
+      padding-top:68px;
+      position:relative;overflow:hidden;
+    }
+    .hero-content{
+      padding:clamp(2.5rem,5vw,5rem) clamp(1.5rem,4vw,5rem);
+      position:relative;z-index:2;
+    }
+    .hero-eyebrow{
+      display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+      color:var(--gold-light);margin-bottom:20px;
+      border:1px solid rgba(200,146,42,.4);padding:6px 14px;border-radius:50px;
+    }
+    .hero h1{
+      font-family:'Montserrat',sans-serif;font-weight:900;
+      font-size:clamp(2.2rem,4.5vw,3.8rem);line-height:1.08;
+      color:#fff;margin-bottom:24px;letter-spacing:-.02em;
+    }
+    .hero h1 em{color:var(--gold);font-style:normal}
+    .hero-sub{
+      font-size:clamp(.95rem,1.2vw,1.08rem);line-height:1.7;color:rgba(255,255,255,0.75);
+      max-width:520px;margin-bottom:36px;
+    }
+    .hero-actions{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+    .btn-primary{
+      background:var(--gold);color:#fff;
+      padding:14px 32px;border-radius:50px;
+      font-family:'Montserrat',sans-serif;font-weight:700;font-size:.85rem;letter-spacing:.06em;text-transform:uppercase;
+      text-decoration:none;border:none;cursor:pointer;
+      transition:background .2s,transform .15s,box-shadow .2s;
+      box-shadow:0 4px 20px rgba(200,146,42,.35);
+      min-height:48px;display:inline-flex;align-items:center;justify-content:center;
+    }
+    .btn-primary:hover{background:var(--gold-light);transform:translateY(-2px);box-shadow:0 8px 28px rgba(200,146,42,.45)}
+    .btn-outline{
+      background:transparent;color:#fff;
+      padding:13px 30px;border-radius:50px;border:2px solid #fff;
+      font-family:'Montserrat',sans-serif;font-weight:700;font-size:.85rem;letter-spacing:.06em;text-transform:uppercase;
+      text-decoration:none;cursor:pointer;transition:.2s;
+      min-height:48px;display:inline-flex;align-items:center;justify-content:center;
+    }
+    .btn-outline:hover{background:#fff;color:var(--navy)}
+    .hero-stats{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:24px;margin-top:48px;
+      padding-top:32px;border-top:1px solid rgba(255,255,255,0.15);
+    }
+    .stat-value{font-family:'Montserrat',sans-serif;font-weight:800;font-size:clamp(1.5rem,2.5vw,1.8rem);color:#fff;line-height:1}
+    .stat-value span{color:var(--gold)}
+    .stat-label{font-size:.78rem;color:rgba(255,255,255,0.6);margin-top:6px;letter-spacing:.03em;text-transform:uppercase;font-weight:500;line-height:1.4}
+    .hero-visual{position:relative;height:100%;min-height:500px;overflow:hidden}
+    .hero-visual img{width:100%;height:100%;object-fit:cover}
+    .hero-visual::after{
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(to right,var(--navy) 0%,rgba(0,0,0,0) 30%);
+    }
+    .hero-badge{
+      position:absolute;bottom:40px;left:40px;z-index:3;
+      background:rgba(255,255,255,.93);backdrop-filter:blur(10px);
+      border:1px solid rgba(200,146,42,.25);
+      border-radius:var(--radius);padding:16px 20px;
+      box-shadow:var(--shadow);
+    }
+    .hero-badge-title{font-family:'Montserrat',sans-serif;font-weight:700;font-size:1rem;color:var(--navy)}
+    .hero-badge-title span{color:var(--gold)}
+    .hero-badge-sub{font-size:.75rem;color:var(--grey);margin-top:3px}
+
+    /* ── SECTION UTILITY ── */
+    section{padding:var(--section-pad) var(--container-pad)}
+    .container{max-width:1280px;margin:0 auto;width:100%}
+    .section-label{font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+    .section-title{
+      font-family:'Montserrat',sans-serif;font-weight:800;
+      font-size:clamp(1.8rem,3.2vw,2.8rem);line-height:1.15;
+      color:var(--navy);letter-spacing:-.02em;
+    }
+    .section-title em{color:var(--gold);font-style:normal}
+    .section-sub{font-size:clamp(.9rem,1.1vw,1.05rem);color:var(--grey);line-height:1.7;max-width:600px;margin-top:16px}
+
+    /* ── WHAT IS WHEELING ── */
+    .what{background:var(--off-white)}
+    .what-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,5vw,72px);align-items:center;margin-top:48px}
+    .what-image{border-radius:20px;overflow:hidden;box-shadow:var(--shadow-lg);height:clamp(280px,35vw,420px)}
+    .what-image img{width:100%;height:100%;object-fit:cover}
+    .what-text p{font-size:.95rem;color:var(--grey);line-height:1.75;margin-bottom:16px}
+    .what-text p strong{color:var(--text);font-weight:600}
+    .definition-box{
+      background:#fff;border:1px solid var(--grey-light);border-left:4px solid var(--gold);
+      border-radius:0 var(--radius) var(--radius) 0;
+      padding:18px 20px;margin-top:24px;
+    }
+    .definition-box p{font-size:.9rem;color:var(--text);line-height:1.7;margin:0}
+
+    /* ── HOW IT WORKS ── */
+    .how{background:#fff}
+    .flow-grid{
+      display:grid;grid-template-columns:repeat(5,1fr);
+      align-items:center;gap:0;margin-top:48px;
+    }
+    .flow-node{text-align:center;padding:2rem 1rem}
+    .flow-icon{
+      width:64px;height:64px;border-radius:50%;
+      background:var(--gold-pale);border:2px solid rgba(200,146,42,.3);
+      display:flex;align-items:center;justify-content:center;margin:0 auto 14px;
+    }
+    .flow-icon svg{width:26px;height:26px;stroke:var(--gold);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    .flow-node h4{font-family:'Montserrat',sans-serif;font-weight:700;font-size:.85rem;color:var(--navy);margin-bottom:6px}
+    .flow-node p{font-size:.75rem;color:var(--grey);line-height:1.5}
+    .flow-arrow{text-align:center;color:var(--gold);font-size:1.4rem;opacity:.6}
+    .flow-note{
+      margin-top:32px;background:var(--off-white);border:1px solid var(--grey-light);
+      border-radius:var(--radius);padding:20px 24px;
+      font-size:.875rem;color:var(--grey);line-height:1.7;max-width:780px;
+    }
+    .flow-note strong{color:var(--navy)}
+
+    /* ── WHO IT'S FOR ── */
+    .who{background:var(--off-white)}
+    .who-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:24px;margin-top:48px}
+    .who-card{
+      background:#fff;border:1px solid var(--grey-light);border-radius:16px;
+      padding:24px;transition:.3s;
+    }
+    .who-card:hover{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),var(--shadow)}
+    .who-icon{
+      width:44px;height:44px;border-radius:10px;
+      background:var(--gold-pale);display:flex;align-items:center;justify-content:center;margin-bottom:16px;
+    }
+    .who-icon svg{width:22px;height:22px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .who-card h4{font-family:'Montserrat',sans-serif;font-weight:700;font-size:.95rem;color:var(--navy);margin-bottom:8px}
+    .who-card p{font-size:.83rem;color:var(--grey);line-height:1.65}
+    .who-threshold{
+      display:flex;align-items:center;gap:20px;margin-top:24px;
+      background:#fff;border:1px solid var(--grey-light);border-radius:var(--radius);
+      padding:20px 24px;
+    }
+    .threshold-num{font-family:'Montserrat',sans-serif;font-weight:900;font-size:2rem;color:var(--gold);white-space:nowrap}
+    .threshold-text{font-size:.875rem;color:var(--grey);line-height:1.6}
+    .threshold-text strong{color:var(--navy)}
+
+    /* ── DEAL STRUCTURE (navy split) ── */
+    .structure{background:var(--navy);color:#fff;overflow:hidden;padding:0}
+    .structure-inner{display:grid;grid-template-columns:1fr 1fr;gap:0;align-items:stretch}
+    .structure-content{padding:var(--section-pad) var(--container-pad)}
+    .structure-content .section-label{color:var(--gold-light)}
+    .structure-content .section-title{color:#fff}
+    .structure-content .section-sub{color:rgba(255,255,255,.6);max-width:none}
+    .structure-card{
+      background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+      border-radius:var(--radius);padding:24px;margin-top:32px;
+    }
+    .structure-card h4{font-family:'Montserrat',sans-serif;font-weight:700;font-size:.9rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px}
+    .structure-row{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.07);gap:12px}
+    .structure-row:last-child{border-bottom:none}
+    .structure-key{font-size:.8rem;color:rgba(255,255,255,.5)}
+    .structure-val{font-size:.8rem;color:#fff;font-weight:600;text-align:right}
+    .structure-val.accent{color:var(--gold-light)}
+    .structure-image{position:relative;min-height:420px;overflow:hidden}
+    .structure-image img{width:100%;height:100%;object-fit:cover;opacity:.5}
+    .structure-image::before{
+      content:'';position:absolute;inset:0;z-index:1;
+      background:linear-gradient(to right,var(--navy) 0%,transparent 50%);
+    }
+    .savings-badge{
+      position:absolute;bottom:40px;right:40px;z-index:2;
+      background:var(--gold);color:#fff;border-radius:16px;
+      padding:20px 24px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.3);
+    }
+    .savings-amount{font-family:'Montserrat',sans-serif;font-weight:900;font-size:clamp(1.6rem,2.5vw,2rem);line-height:1}
+    .savings-label{font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-top:6px;opacity:.85}
+
+    /* ── CHARGES ── */
+    .charges{background:#fff}
+    .charges-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:24px;margin-top:48px}
+    .charge-card{
+      background:var(--off-white);border:1px solid var(--grey-light);border-radius:16px;padding:24px;
+    }
+    .charge-badge{
+      display:inline-block;font-size:.65rem;font-weight:700;padding:3px 10px;border-radius:50px;
+      margin-bottom:12px;letter-spacing:.05em;text-transform:uppercase;
+    }
+    .charge-badge.passed{background:rgba(200,146,42,.15);color:var(--gold)}
+    .charge-badge.absorbed{background:var(--grey-light);color:var(--grey)}
+    .charge-card h4{font-family:'Montserrat',sans-serif;font-weight:700;font-size:.95rem;color:var(--navy);margin-bottom:8px}
+    .charge-card p{font-size:.83rem;color:var(--grey);line-height:1.65}
+    .charges-note{
+      margin-top:24px;background:var(--gold-pale);border:1px solid rgba(200,146,42,.25);
+      border-radius:var(--radius);padding:18px 22px;
+      font-size:.875rem;color:var(--text);line-height:1.7;
+    }
+    .charges-note strong{color:var(--navy)}
+    .charges-note a{color:var(--gold);text-decoration:none;font-weight:600}
+    .charges-note a:hover{text-decoration:underline}
+
+    /* ── BENEFITS ── */
+    .benefits{background:var(--off-white)}
+    .benefits-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:24px;margin-top:48px}
+    .benefit-item{
+      background:#fff;border:1px solid var(--grey-light);border-radius:16px;
+      padding:24px;display:flex;gap:18px;align-items:flex-start;transition:.3s;
+    }
+    .benefit-item:hover{border-color:var(--gold);box-shadow:var(--shadow)}
+    .benefit-check{
+      flex-shrink:0;width:32px;height:32px;border-radius:50%;
+      background:var(--gold-pale);border:1px solid rgba(200,146,42,.3);
+      display:flex;align-items:center;justify-content:center;margin-top:2px;
+    }
+    .benefit-check svg{width:14px;height:14px;stroke:var(--gold);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+    .benefit-body h4{font-family:'Montserrat',sans-serif;font-weight:700;font-size:.92rem;color:var(--navy);margin-bottom:6px}
+    .benefit-body p{font-size:.83rem;color:var(--grey);line-height:1.65}
+
+    /* ── EWDP BAND ── */
+    .ewdp-band{background:#fff;border-top:1px solid var(--grey-light);border-bottom:1px solid var(--grey-light)}
+    .ewdp-inner{
+      max-width:1100px;margin:0 auto;
+      display:grid;grid-template-columns:1fr auto;gap:3rem;align-items:center;
+    }
+    .ewdp-inner .section-title{font-size:clamp(1.6rem,2.8vw,2.2rem)}
+    .ewdp-inner .section-sub{max-width:none}
+    .ewdp-actions{display:flex;flex-direction:column;gap:12px;min-width:210px}
+    .btn-navy{
+      background:var(--navy);color:#fff;
+      padding:14px 28px;border-radius:50px;
+      font-family:'Montserrat',sans-serif;font-weight:700;font-size:.82rem;letter-spacing:.06em;text-transform:uppercase;
+      text-decoration:none;transition:.2s;
+      min-height:48px;display:inline-flex;align-items:center;justify-content:center;
+    }
+    .btn-navy:hover{background:var(--navy-mid);transform:translateY(-1px)}
+    .btn-outline-navy{
+      background:transparent;color:var(--navy);
+      padding:13px 28px;border-radius:50px;border:2px solid var(--grey-light);
+      font-family:'Montserrat',sans-serif;font-weight:700;font-size:.82rem;letter-spacing:.06em;text-transform:uppercase;
+      text-decoration:none;transition:.2s;
+      min-height:48px;display:inline-flex;align-items:center;justify-content:center;
+    }
+    .btn-outline-navy:hover{border-color:var(--navy)}
+
+    /* ── CTA SECTION ── */
+    .cta-section{background:linear-gradient(135deg,var(--gold) 0%,#A67320 100%)}
+    .cta-inner{max-width:700px;margin:0 auto;text-align:center}
+    .cta-inner h2{
+      font-family:'Montserrat',sans-serif;font-weight:900;
+      font-size:clamp(1.8rem,3.5vw,3rem);color:#fff;letter-spacing:-.02em;margin-bottom:16px;
+    }
+    .cta-inner p{font-size:clamp(.95rem,1.2vw,1.05rem);color:rgba(255,255,255,.85);margin-bottom:36px;line-height:1.7}
+    .cta-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+    .btn-white{
+      background:#fff;color:var(--gold);
+      padding:14px 36px;border-radius:50px;
+      font-family:'Montserrat',sans-serif;font-weight:700;font-size:.85rem;letter-spacing:.06em;text-transform:uppercase;
+      text-decoration:none;transition:.2s;box-shadow:0 4px 20px rgba(0,0,0,.15);
+      min-height:48px;display:inline-flex;align-items:center;justify-content:center;
+    }
+    .btn-white:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.2)}
+    .btn-ghost-white{
+      background:transparent;color:#fff;
+      padding:13px 34px;border-radius:50px;border:2px solid rgba(255,255,255,.6);
+      font-family:'Montserrat',sans-serif;font-weight:700;font-size:.85rem;letter-spacing:.06em;text-transform:uppercase;
+      text-decoration:none;transition:.2s;
+      min-height:48px;display:inline-flex;align-items:center;justify-content:center;
+    }
+    .btn-ghost-white:hover{border-color:#fff;background:rgba(255,255,255,.12)}
+
+    /* ── FOOTER ── */
+    footer{background:var(--navy);color:rgba(255,255,255,.6);padding:clamp(40px,6vw,60px) var(--container-pad) 32px}
+    .footer-inner{max-width:1280px;margin:0 auto}
+    .footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;padding-bottom:48px;border-bottom:1px solid rgba(255,255,255,.1)}
+    .footer-logo{display:flex;align-items:center;gap:10px;margin-bottom:16px;text-decoration:none}
+    .footer-logo img{width:28px;height:28px}
+    .footer-logo-text{font-family:'Montserrat',sans-serif;font-weight:800;font-size:1rem;color:#fff;letter-spacing:.04em}
+    .footer-logo-text span{color:var(--gold)}
+    .footer-tagline{font-size:.85rem;line-height:1.7;max-width:300px}
+    .footer-col h4{font-family:'Montserrat',sans-serif;font-weight:700;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;color:#fff;margin-bottom:18px}
+    .footer-links{list-style:none;display:flex;flex-direction:column;gap:10px}
+    .footer-links a{font-size:.85rem;color:rgba(255,255,255,.55);text-decoration:none;transition:color .2s;padding:2px 0;display:inline-block}
+    .footer-links a:hover{color:var(--gold)}
+    .footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:28px;flex-wrap:wrap;gap:16px}
+    .footer-bottom p{font-size:.78rem}
+    .footer-bottom-links{display:flex;gap:16px;flex-wrap:wrap}
+    .footer-bottom a{color:rgba(255,255,255,.4);text-decoration:none;font-size:.78rem;transition:color .2s}
+    .footer-bottom a:hover{color:var(--gold)}
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:1024px){
+      .hero{grid-template-columns:1fr;min-height:auto}
+      .hero-visual{display:none}
+      .structure-inner{grid-template-columns:1fr}
+      .structure-image{display:none}
+      .ewdp-inner{grid-template-columns:1fr}
+      .footer-top{grid-template-columns:1fr 1fr}
+    }
+    @media(max-width:768px){
+      .nav-links,.nav-cta{display:none}
+      .hamburger{display:flex}
+      .what-grid{grid-template-columns:1fr}
+      .flow-grid{grid-template-columns:1fr}
+      .flow-arrow{transform:rotate(90deg)}
+      .footer-top{grid-template-columns:1fr}
+      .footer-bottom{flex-direction:column;text-align:center;justify-content:center}
+      .footer-bottom-links{justify-content:center}
+      .cta-actions{flex-direction:column;align-items:stretch}
+      .cta-actions a{width:100%}
+    }
+    @media(prefers-reduced-motion:no-preference){
+      .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+      .reveal.visible{opacity:1;transform:none}
+      .reveal-delay-1{transition-delay:.1s}
+      .reveal-delay-2{transition-delay:.2s}
+      .reveal-delay-3{transition-delay:.3s}
+    }
+    @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}}
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="https://www.ewdp.co.za" class="nav-logo">
+      <img src="https://www.ewdp.co.za/favicon.png" alt="Aethel Energy"/>
+      <span class="nav-logo-text">AETHEL <span>ENERGY</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#what">What Is Wheeling</a></li>
+      <li><a href="#how">How It Works</a></li>
+      <li><a href="#who">Who Qualifies</a></li>
+      <li><a href="#structure">Deal Structure</a></li>
+      <li><a href="#benefits">Benefits</a></li>
+      <li><a href="https://ewdp.co.za/ewdp.html">EWDP Platform ↗</a></li>
+    </ul>
+    <a href="https://www.ewdp.co.za/#contact" class="nav-cta">Talk to Us</a>
+    <button class="hamburger" onclick="document.getElementById('mobileMenu').classList.toggle('open')" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#what">What Is Wheeling</a>
+  <a href="#how">How It Works</a>
+  <a href="#who">Who Qualifies</a>
+  <a href="#structure">Deal Structure</a>
+  <a href="#benefits">Benefits</a>
+  <a href="https://ewdp.co.za/ewdp.html">EWDP Platform ↗</a>
+  <a href="https://www.ewdp.co.za/#contact" class="nav-cta">Talk to Us</a>
+</div>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow">Wheeling Origination · 2MW – 100MW+</div>
+    <h1>Energy Wheeling.<br><em>Explained.</em></h1>
+    <p class="hero-sub">
+      Buy clean electricity directly from an Independent Power Producer — transmitted across the national grid to your facility. No generators. No Eskom dependency. A fixed tariff, below what you currently pay, for the full term of your agreement.
+    </p>
+    <div class="hero-actions">
+      <a href="https://ewdp.co.za/ewdp.html" class="btn-primary">Model My Savings on EWDP ↗</a>
+      <a href="https://www.ewdp.co.za/#contact" class="btn-outline">Talk to Aethel Energy</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-value">2<span>MW+</span></div>
+        <div class="stat-label">Minimum qualifying demand</div>
+      </div>
+      <div>
+        <div class="stat-value">R<span>0</span></div>
+        <div class="stat-label">Upfront capital via PPA</div>
+      </div>
+      <div>
+        <div class="stat-value">10–<span>20yr</span></div>
+        <div class="stat-label">Typical PPA term</div>
+      </div>
+      <div>
+        <div class="stat-value">100<span>%</span></div>
+        <div class="stat-label">Certified renewable energy</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <img src="https://images.unsplash.com/photo-1509391366360-2e959784a276?w=1200&auto=format&fit=crop&q=80" alt="Solar farm — clean energy wheeling"/>
+    <div class="hero-badge">
+      <div class="hero-badge-title">Aethel Energy <span>Originates.</span></div>
+      <div class="hero-badge-sub">You assess · You decide · You conclude</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── WHAT IS WHEELING ── -->
+<section class="what" id="what">
+  <div class="container">
+    <div class="section-label reveal">What Is Wheeling</div>
+    <div class="what-grid">
+      <div class="what-text reveal">
+        <h2 class="section-title">Power Moves Across the Grid.<br><em>You Pay the Producer.</em></h2>
+        <br>
+        <p>Energy wheeling is the transmission of electricity generated by a private, renewable energy producer across the existing national grid infrastructure — delivering it to your facility as if it were generated next door.</p>
+        <p>The Independent Power Producer (IPP) generates solar or wind energy at their licensed plant. That power is injected into the grid. An equivalent amount is extracted at your meter point. <strong>The grid is simply the highway.</strong> The agreement — and the price — is directly between you and the producer.</p>
+        <p>Wheeling does not require you to build anything at your site. No panels, no batteries, no infrastructure changes. Your current electrical connection stays exactly as it is. You simply switch supplier — from Eskom or your municipality to a private IPP offering a fixed, below-Eskom tariff rate.</p>
+        <div class="definition-box">
+          <p><strong>In plain terms:</strong> wheeling is a Power Purchase Agreement (PPA) with a private renewable energy producer, delivered via the national grid — at a rate fixed below what you currently pay, for the duration of your contract.</p>
+        </div>
+      </div>
+      <div class="what-image reveal reveal-delay-2">
+        <img src="https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=900&auto=format&fit=crop&q=80" alt="Solar farm generating clean energy"/>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ── -->
+<section class="how" id="how">
+  <div class="container">
+    <div class="section-label reveal">How It Works</div>
+    <h2 class="section-title reveal">The Energy Path from <em>Producer to You.</em></h2>
+    <p class="section-sub reveal">Five parties are involved in a wheeling transaction. Understanding each one's role removes the complexity.</p>
+
+    <div class="flow-grid reveal">
+      <div class="flow-node">
+        <div class="flow-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>
+        </div>
+        <h4>IPP / Producer</h4>
+        <p>Generates renewable energy at their licensed solar or wind plant</p>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="flow-icon">
+          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <h4>National Grid</h4>
+        <p>Transports power via Eskom's transmission network — the highway</p>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="flow-icon">
+          <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+        </div>
+        <h4>Municipality / Distributor</h4>
+        <p>Delivers wheeled energy via the local distribution network to your meter</p>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="flow-icon">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <h4>Your Facility</h4>
+        <p>Receives clean, cheaper power at your existing meter — nothing changes on-site</p>
+      </div>
+    </div>
+
+    <div class="flow-note reveal">
+      <strong>Where does Aethel Energy fit?</strong> We originate the opportunity — identifying the right IPP with available wheeling capacity and facilitating the introduction between you and the producer. The PPA is concluded directly between your business and the IPP. We do not operate the grid, manage transmission, or sit between you and the deal.
+    </div>
+  </div>
+</section>
+
+<!-- ── WHO IT'S FOR ── -->
+<section class="who" id="who">
+  <div class="container">
+    <div class="section-label reveal">Who Qualifies</div>
+    <h2 class="section-title reveal">Built for <em>High-Consumption</em> Businesses.</h2>
+    <p class="section-sub reveal">Wheeling is a large-scale instrument suited to commercial and industrial operations whose monthly energy demand justifies the deal size — typically 2MW and above.</p>
+
+    <div class="who-grid">
+      <div class="who-card reveal">
+        <div class="who-icon"><svg viewBox="0 0 24 24"><path d="M2 20h20M4 20V10l8-6 8 6v10"/><rect x="9" y="14" width="6" height="6"/></svg></div>
+        <h4>Large Manufacturing & Processing</h4>
+        <p>Food and beverage, automotive, chemical plants — operations running continuous production lines with consistent, high-volume loads.</p>
+      </div>
+      <div class="who-card reveal reveal-delay-1">
+        <div class="who-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg></div>
+        <h4>Cold Chain & Logistics</h4>
+        <p>Refrigerated warehousing, distribution centres, and logistics hubs running 24/7 — where energy is a major and non-negotiable operational cost.</p>
+      </div>
+      <div class="who-card reveal reveal-delay-2">
+        <div class="who-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+        <h4>Data Centres & Tech Infrastructure</h4>
+        <p>Facilities with guaranteed uptime requirements and substantial baseload demand where green credentials support ESG and Scope 2 reporting.</p>
+      </div>
+      <div class="who-card reveal">
+        <div class="who-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg></div>
+        <h4>Commercial Real Estate</h4>
+        <p>Large commercial properties and shopping centres supplying multiple tenants — where wheeling reduces bulk supply costs and differentiates the offering.</p>
+      </div>
+      <div class="who-card reveal reveal-delay-1">
+        <div class="who-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></div>
+        <h4>Mining & Extraction</h4>
+        <p>Surface and underground operations with high, predictable consumption profiles where energy costs represent a significant share of operating expenditure.</p>
+      </div>
+      <div class="who-card reveal reveal-delay-2">
+        <div class="who-icon"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+        <h4>Hospitals & Critical Facilities</h4>
+        <p>Healthcare, education campuses, and high-consumption critical facilities that need supply reliability alongside cost reduction and ESG reporting requirements.</p>
+      </div>
+    </div>
+
+    <div class="who-threshold reveal">
+      <span class="threshold-num">2MW+</span>
+      <p class="threshold-text"><strong>The entry threshold for wheeling is typically 2MW of contracted capacity.</strong> This reflects the deal structures available through licensed IPPs on the Eskom grid. Businesses below this demand level are better suited to onsite solar PV and BESS — which Aethel Energy also originates.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── DEAL STRUCTURE ── -->
+<div class="structure" id="structure">
+  <div class="structure-inner">
+    <div class="structure-content">
+      <div class="section-label reveal">Deal Structure</div>
+      <h2 class="section-title reveal">What a Wheeling PPA <em>Actually Looks Like.</em></h2>
+      <p class="section-sub reveal">A wheeling deal is a long-term Power Purchase Agreement between your business and a licensed IPP. Here is what the structure typically covers.</p>
+
+      <div class="structure-card reveal">
+        <h4>PPA Fundamentals</h4>
+        <div class="structure-row"><span class="structure-key">Agreement type</span><span class="structure-val">Power Purchase Agreement (PPA)</span></div>
+        <div class="structure-row"><span class="structure-key">Parties</span><span class="structure-val">Your business ↔ Licensed IPP</span></div>
+        <div class="structure-row"><span class="structure-key">Contracted capacity</span><span class="structure-val accent">2MW – 100MW+</span></div>
+        <div class="structure-row"><span class="structure-key">Typical term</span><span class="structure-val">10 – 20 years</span></div>
+        <div class="structure-row"><span class="structure-key">Tariff structure</span><span class="structure-val">Fixed, below-Eskom rate</span></div>
+        <div class="structure-row"><span class="structure-key">Escalation</span><span class="structure-val">CPI-linked or fixed annual %</span></div>
+        <div class="structure-row"><span class="structure-key">Upfront capex</span><span class="structure-val accent">R0 via PPA</span></div>
+        <div class="structure-row"><span class="structure-key">Billing</span><span class="structure-val">Monthly per kWh consumed</span></div>
+      </div>
+
+      <div class="structure-card reveal" style="margin-top:16px">
+        <h4>Regulatory Context</h4>
+        <div class="structure-row"><span class="structure-key">Regulator</span><span class="structure-val">NERSA</span></div>
+        <div class="structure-row"><span class="structure-key">Grid access</span><span class="structure-val">Electricity Regulation Act — third-party access</span></div>
+        <div class="structure-row"><span class="structure-key">Transmission operator</span><span class="structure-val">Eskom Transmission (national)</span></div>
+        <div class="structure-row"><span class="structure-key">Distribution</span><span class="structure-val">Eskom or local municipality</span></div>
+        <div class="structure-row"><span class="structure-key">Green certificates</span><span class="structure-val">I-RECs issued by producer</span></div>
+        <div class="structure-row"><span class="structure-key">Carbon reporting</span><span class="structure-val">Qualifies for Scope 2 reduction</span></div>
+      </div>
+    </div>
+    <div class="structure-image">
+      <img src="https://images.unsplash.com/photo-1453847668862-487637052f8a?w=900&auto=format&fit=crop&q=80" alt="Power transmission infrastructure"/>
+      <div class="savings-badge">
+        <div class="savings-amount">R0</div>
+        <div class="savings-label">Capex required</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── CHARGES ── -->
+<section class="charges" id="charges">
+  <div class="container">
+    <div class="section-label reveal">Understanding the Costs</div>
+    <h2 class="section-title reveal">The Charges Involved <em>in Wheeling.</em></h2>
+    <p class="section-sub reveal">Wheeling involves more than just the tariff you pay the IPP. Third-party charges apply for using the grid — these are factored into every savings model from the outset.</p>
+
+    <div class="charges-grid">
+      <div class="charge-card reveal">
+        <span class="charge-badge passed">Passed through to client</span>
+        <h4>Wheeling Charge</h4>
+        <p>A fee charged by Eskom Transmission for using the national grid to transport the energy from the IPP's plant to your region. Typically expressed as c/kWh.</p>
+      </div>
+      <div class="charge-card reveal reveal-delay-1">
+        <span class="charge-badge passed">Passed through to client</span>
+        <h4>Distribution / Network Charge</h4>
+        <p>A charge levied by the local distributor (Eskom Distribution or municipality) for delivering the wheeled power along the local network to your meter. Varies by region.</p>
+      </div>
+      <div class="charge-card reveal reveal-delay-2">
+        <span class="charge-badge passed">Passed through to client</span>
+        <h4>System Losses</h4>
+        <p>A small percentage of energy is lost in transmission. The IPP generates slightly more than you consume to cover grid losses — accounted for in the contracted volume.</p>
+      </div>
+      <div class="charge-card reveal reveal-delay-3">
+        <span class="charge-badge absorbed">Typically absorbed by IPP</span>
+        <h4>Imbalance / Settlement</h4>
+        <p>Where actual generation deviates from contracted delivery, imbalance costs may apply. Most wheeling PPAs allocate this risk to the producer. Confirm in PPA terms.</p>
+      </div>
+    </div>
+
+    <div class="charges-note reveal">
+      <strong>Net savings remain material even after all wheeling charges.</strong> The EWDP modelling platform accounts for transmission, distribution, and loss factors in every projection — giving you a net, post-charge figure, not a gross tariff comparison. <a href="https://ewdp.co.za/ewdp.html">Run your numbers on EWDP ↗</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── BENEFITS ── -->
+<section class="benefits" id="benefits">
+  <div class="container">
+    <div class="section-label reveal">The Aethel Advantage</div>
+    <h2 class="section-title reveal">Why Wheeling <em>Makes Sense.</em></h2>
+    <p class="section-sub reveal">For qualifying C&I businesses, wheeling is one of the most cost-effective and structurally straightforward paths to cheaper, cleaner energy in South Africa.</p>
+
+    <div class="benefits-grid">
+      <div class="benefit-item reveal">
+        <div class="benefit-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="benefit-body">
+          <h4>Below-Eskom Tariff, Fixed for the Term</h4>
+          <p>Your PPA rate is fixed below the Eskom tariff and escalates at a pre-agreed rate — typically CPI or a fixed annual percentage — insulating you from Eskom's historic double-digit tariff increases.</p>
+        </div>
+      </div>
+      <div class="benefit-item reveal reveal-delay-1">
+        <div class="benefit-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="benefit-body">
+          <h4>No Capital Expenditure Required</h4>
+          <p>A wheeling PPA carries zero upfront cost. No infrastructure build, no procurement, no installation. You sign a PPA and switch supplier — the IPP has already built and financed their plant.</p>
+        </div>
+      </div>
+      <div class="benefit-item reveal">
+        <div class="benefit-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="benefit-body">
+          <h4>Verified Green Credentials</h4>
+          <p>Your wheeled energy qualifies for renewable energy certificates (I-RECs), enabling verifiable Scope 2 emissions reporting under GHG Protocol standards — supporting your ESG commitments.</p>
+        </div>
+      </div>
+      <div class="benefit-item reveal reveal-delay-1">
+        <div class="benefit-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="benefit-body">
+          <h4>No On-Site Infrastructure</h4>
+          <p>Your existing electrical installation remains unchanged. No rooftop assessment, no structural work, no tenant disruption — wheeling is entirely grid-side. Your site is the offtake point, not the generation point.</p>
+        </div>
+      </div>
+      <div class="benefit-item reveal">
+        <div class="benefit-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="benefit-body">
+          <h4>Scalable to Your Demand</h4>
+          <p>Wheeling can be structured to supply a portion or the majority of your total consumption — from 2MW up to 100MW+. The deal is sized to your actual load profile, not a one-size-fits-all package.</p>
+        </div>
+      </div>
+      <div class="benefit-item reveal reveal-delay-1">
+        <div class="benefit-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="benefit-body">
+          <h4>Energy Cost Predictability</h4>
+          <p>A fixed PPA tariff with known escalation gives your finance team multi-year energy cost visibility — removing Eskom tariff uncertainty from your operational budget and enabling better capital planning.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── EWDP BAND ── -->
+<section class="ewdp-band">
+  <div class="container">
+    <div class="ewdp-inner">
+      <div class="reveal">
+        <div class="section-label">EWDP Modelling Platform</div>
+        <h2 class="section-title">Run Your Own <em>Numbers.</em></h2>
+        <p class="section-sub">The Energy Wheeling Development Platform (EWDP) is a savings modelling tool built by Aethel Energy for commercial and industrial businesses across South Africa. Input your consumption profile, location, and deal parameters — the model does the rest. No contact required.</p>
+      </div>
+      <div class="ewdp-actions reveal reveal-delay-1">
+        <a href="https://ewdp.co.za/ewdp.html" class="btn-primary">Open EWDP Platform ↗</a>
+        <a href="https://www.ewdp.co.za/#contact" class="btn-outline-navy">Talk to Aethel Energy</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-inner reveal">
+      <h2>Ready to Explore a Wheeling Deal?</h2>
+      <p>A free conversation reveals whether wheeling fits your business — what capacity you qualify for and what the deal structure looks like. No commitment required.</p>
+      <div class="cta-actions">
+        <a href="https://www.ewdp.co.za/#contact" class="btn-white">Request a Free Assessment</a>
+        <a href="tel:0661508371" class="btn-ghost-white">Call 066 150 8371</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <a href="https://www.ewdp.co.za" class="footer-logo">
+          <img src="https://www.ewdp.co.za/favicon.png" alt="Aethel Energy"/>
+          <span class="footer-logo-text">AETHEL <span>ENERGY</span></span>
+        </a>
+        <p class="footer-tagline">Clean energy origination across South Africa. We facilitate wheeling and onsite solar PV and BESS deals — connecting businesses to the right producer or EPC contractor nationwide.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul class="footer-links">
+          <li><a href="wheeling.html">Wheeling Origination</a></li>
+          <li><a href="https://www.ewdp.co.za/#services">Onsite Solar PV + BESS</a></li>
+          <li><a href="https://www.ewdp.co.za/#services">Deal Origination Nationwide</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul class="footer-links">
+          <li><a href="https://www.ewdp.co.za/#pillars">What We Do</a></li>
+          <li><a href="https://www.ewdp.co.za/#process">Our Process</a></li>
+          <li><a href="https://www.ewdp.co.za/#contact">Contact Us</a></li>
+          <li><a href="https://ewdp.co.za/ewdp.html">EWDP Platform ↗</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul class="footer-links">
+          <li><a href="tel:0661508371">066 150 8371</a></li>
+          <li><a href="mailto:info@aethelenergysouthafrica.co.za">info@aethelenergysouthafrica.co.za</a></li>
+          <li><a href="https://www.aethelenergysouthafrica.co.za">aethelenergysouthafrica.co.za</a></li>
+          <li>Nationwide, South Africa</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Aethelwine Homes (Pty) Ltd t/a Aethel Energy South Africa. All rights reserved.</p>
+      <div class="footer-bottom-links">
+        <a href="https://firebasestorage.googleapis.com/v0/b/eidp-c576e.firebasestorage.app/o/Terms%20and%20Privacy%20Policy%20Aethel%20Energy%2FAethel_Energy_Privacy_Policy.pdf?alt=media&token=3a30c107-6e0c-45c3-80da-d762a81917e5">Privacy Policy</a>
+        <a href="https://firebasestorage.googleapis.com/v0/b/eidp-c576e.firebasestorage.app/o/Terms%20and%20Privacy%20Policy%20Aethel%20Energy%2FAethel_Energy_Terms_of_Service_Updated.pdf?alt=media&token=b00b8a11-d632-4e69-81c0-09b20c0e9e45">Terms of Service</a>
+        <a href="https://firebasestorage.googleapis.com/v0/b/eidp-c576e.firebasestorage.app/o/Terms%20and%20Privacy%20Policy%20Aethel%20Energy%2FAethel_Energy_PAIA_Manual.pdf?alt=media&token=67fb9738-0261-47a0-a334-79e2b5b8a2cd">PAIA Manual</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Nav scroll shadow
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 10);
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Mobile menu close on link click
+  document.querySelectorAll('.mobile-menu a').forEach(a => {
+    a.addEventListener('click', () => document.getElementById('mobileMenu').classList.remove('open'));
+  });
+</script>
+</body>
+</html>
