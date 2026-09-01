@@ -37,38 +37,131 @@
     border-bottom:1px solid var(--grey-light);
     transition:box-shadow .3s;
   }
-  nav.scrolled{box-shadow:var(--shadow)}
+  .scrolled{box-shadow:var(--shadow)}
   .nav-inner{
-    max-width:1280px;margin:0 auto;
-    display:flex;align-items:center;justify-content:space-between;
-    padding:0 var(--container-pad);height:68px;
+    max-width:1280px;
+    width:100%;
+    margin:0 auto;
+    height:68px;
+    padding:0 var(--container-pad);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
   }
-  .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
-  .nav-logo svg{width:36px;height:36px;flex-shrink:0}
-  .nav-logo-text{font-family:'Montserrat',sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:.04em;color:var(--navy)}
+  .nav-logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    text-decoration:none;
+    flex-shrink:0;
+  }
+  .nav-logo-img{
+    width:36px;
+    height:36px;
+    flex-shrink:0;
+  }
+  .nav-logo-text{
+    font-family:'Montserrat',sans-serif;
+    font-weight:800;
+    font-size:1.05rem;
+    letter-spacing:.04em;
+    color:var(--navy);
+    white-space:nowrap;
+  }
   .nav-logo-text span{color:var(--gold)}
-  .nav-links{display:flex;gap:clamp(16px, 2.5vw, 32px);list-style:none}
-  .nav-links a{font-size:.875rem;font-weight:500;color:var(--navy);text-decoration:none;letter-spacing:.02em;transition:color .2s;padding:8px 0}
+  .nav-links{
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    gap:clamp(10px,1.5vw,22px);
+    list-style:none;
+    flex:1;
+    min-width:0;
+  }
+  .nav-links a{
+    font-size:.82rem;
+    font-weight:500;
+    color:var(--navy);
+    text-decoration:none;
+    letter-spacing:.01em;
+    transition:color .2s;
+    padding:8px 0;
+    white-space:nowrap;
+  }
   .nav-links a:hover{color:var(--gold)}
   .nav-cta{
-    background:var(--gold);color:#fff;border:none;
-    padding:10px 22px;border-radius:50px;
-    font-family:'Montserrat',sans-serif;font-weight:700;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;
-    cursor:pointer;text-decoration:none;transition:background .2s,transform .15s;
-    min-height:44px;display:inline-flex;align-items:center;justify-content:center;
+    background:var(--gold);
+    color:#fff;
+    border:none;
+    padding:9px 18px;
+    border-radius:50px;
+    font-family:'Montserrat',sans-serif;
+    font-weight:700;
+    font-size:.75rem;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    cursor:pointer;
+    text-decoration:none;
+    transition:background .2s,transform .15s;
+    min-height:42px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    white-space:nowrap;
+    flex-shrink:0;
   }
   .nav-cta:hover{background:var(--gold-light);transform:translateY(-1px)}
-  .hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;cursor:pointer;background:none;border:none;padding:8px;min-height:44px;min-width:44px}
+  .hamburger{
+    display:none;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    gap:5px;
+    cursor:pointer;
+    background:none;
+    border:none;
+    padding:8px;
+    min-height:44px;
+    min-width:44px;
+    flex-shrink:0;
+  }
   .hamburger span{display:block;width:24px;height:2px;background:var(--navy);border-radius:2px;transition:.3s}
   .mobile-menu{
-    display:none;position:fixed;top:68px;left:0;width:100%;max-height:calc(100vh - 68px);overflow-y:auto;
-    background:#fff;border-bottom:1px solid var(--grey-light);
-    padding:20px var(--container-pad);z-index:998;
-    flex-direction:column;gap:12px;box-shadow:var(--shadow);
+    display:none;
+    position:fixed;
+    top:68px;
+    left:0;
+    width:100%;
+    max-height:calc(100vh - 68px);
+    overflow-y:auto;
+    background:#fff;
+    border-bottom:1px solid var(--grey-light);
+    padding:12px var(--container-pad) 24px;
+    z-index:998;
+    flex-direction:column;
+    gap:0;
+    box-shadow:var(--shadow);
   }
   .mobile-menu.open{display:flex}
-  .mobile-menu a{font-weight:500;color:var(--navy);text-decoration:none;font-size:1rem;padding:12px 0;border-bottom:1px solid var(--grey-light)}
-  .mobile-menu .nav-cta{text-align:center;margin-top:8px;width:100%}
+  .mobile-menu a{
+    display:block;
+    width:100%;
+    font-weight:500;
+    color:var(--navy);
+    text-decoration:none;
+    font-size:1rem;
+    padding:15px 4px;
+    border-bottom:1px solid var(--grey-light);
+  }
+  .mobile-menu .nav-cta{
+    display:flex;
+    margin-top:16px;
+    padding:12px 20px;
+    border-bottom:none;
+    width:100%;
+    justify-content:center;
+  }
 
  /* ─── HERO ─────────────────────────────────────────── */
 .hero{
@@ -392,9 +485,12 @@
     .contact-grid{grid-template-columns:1fr}
     .footer-top{grid-template-columns:1fr 1fr}
   }
-  @media(max-width:768px){
-    .nav-links,.nav-cta{display:none}
+  @media(max-width:1050px){
+    .nav-links,
+    nav > .nav-inner > .nav-cta{display:none}
     .hamburger{display:flex}
+  }
+  @media(max-width:768px){
     .hero-actions{flex-direction:column;align-items:stretch}
     .hero-actions a,.hero-actions button{width:100%}
     .form-row{grid-template-columns:1fr}
@@ -404,6 +500,10 @@
     .ewdp-badge{right:0;top:-12px}
   }
   @media(max-width:480px){
+    .nav-inner{padding-left:16px;padding-right:16px}
+    .nav-logo-text{font-size:.95rem}
+    .nav-logo-img{width:32px;height:32px}
+    .mobile-menu{top:68px;max-height:calc(100vh - 68px)}
     .savings-badge{right:20px;bottom:20px;left:20px;width:calc(100% - 40px)}
     .cta-actions{flex-direction:column;align-items:stretch}
     .cta-actions a{width:100%}
@@ -452,6 +552,7 @@
   <a href="#savings" onclick="closeMenu()">Why Us</a>
   <a href="#process" onclick="closeMenu()">Process</a>
   <a href="https://ewdp.co.za/ewdp.html" target="_blank" rel="noopener" style="color:var(--gold);font-weight:600">EWDP Modelling Platform ↗</a>
+  <a href="https://ewdp.co.za/wheeling.html" onclick="closeMenu()">What is Wheeling?</a>
   <a href="#contact" onclick="closeMenu()">Contact</a>
   <a href="#contact" class="nav-cta" onclick="closeMenu()">Talk to Us</a>
 </div>
